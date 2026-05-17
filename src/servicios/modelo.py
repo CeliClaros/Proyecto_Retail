@@ -1,10 +1,22 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 
-class Servicio(BaseModel):
-    id: Optional[int] = None
-    nombre: str
-    descripcion: str
-    tiempo_estimado_base: int
-    requisitos: str
-    activo: bool = True
+class TipoEventoCrear(BaseModel):
+    nombre:          str
+    descripcion:     Optional[str] = None
+    tiempo_base_min: int
+    requisitos:      Optional[str] = None
+    activo:          bool = True
+
+class TipoEventoRespuesta(BaseModel):
+    id:              int
+    nombre:          str
+    descripcion:     Optional[str] = None
+    tiempo_base_min: int
+    requisitos:      Optional[str] = None
+    activo:          bool
+    fecha_alta:      datetime
+
+    class Config:
+        from_attributes = True

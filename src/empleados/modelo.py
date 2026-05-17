@@ -1,13 +1,23 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import time
+from datetime import datetime
 
-class Empleado(BaseModel):
-    id: Optional[int] = None
-    nombre: str
+class EmpleadoCrear(BaseModel):
+    nombre:   str
     apellido: str
-    servicios_habilitados: list[int]
-    horario_inicio: time
-    horario_fin: time
-    activo: bool = True
-    rendimiento_promedio: float = 0.0
+    email:    str
+    telefono: Optional[str] = None
+    activo:   bool = True
+
+class EmpleadoRespuesta(BaseModel):
+    id:         int
+    legajo:     str
+    nombre:     str
+    apellido:   str
+    email:      str
+    telefono:   Optional[str] = None
+    activo:     bool
+    fecha_alta: datetime
+
+    class Config:
+        from_attributes = True
