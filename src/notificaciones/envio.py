@@ -50,3 +50,11 @@ def enviar_ruta(telefono: str, nombre: str, lat: float, lng: float):
 @rutas_notificaciones.post("/test")
 def test_notificacion():
     return {"mensaje": "Servicio de notificaciones activo"}
+
+@rutas_notificaciones.post("/enviar-test-whatsapp")
+def test_whatsapp_real(telefono: str, nombre: str):
+    resultado = enviar_whatsapp(
+        telefono,
+        f"Hola {nombre}! Mensaje de prueba del sistema RetailQueue. Todo funciona!"
+    )
+    return {"enviado": resultado, "telefono": telefono}
