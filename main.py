@@ -5,6 +5,7 @@ from src.servicios.rutas import rutas_servicios
 from src.queue_atencion.rutas import rutas_atencion
 from src.notificaciones.envio import rutas_notificaciones
 from src.asignaciones.rutas import rutas_asignaciones
+from src.auth.rutas import rutas_auth
 from src.config.base_datos import crear_tablas
 
 crear_tablas()
@@ -23,6 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(rutas_auth,           prefix="/api/auth",           tags=["Autenticación"])
 app.include_router(rutas_empleados,      prefix="/api/empleados",      tags=["Empleados"])
 app.include_router(rutas_servicios,      prefix="/api/tipo-eventos",   tags=["Tipo de Eventos"])
 app.include_router(rutas_atencion,       prefix="/api/reservas",       tags=["Reservas"])

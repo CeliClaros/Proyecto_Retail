@@ -17,16 +17,23 @@ class CanalNotifEnum(str, enum.Enum):
     EMAIL    = "email"
     SMS      = "sms"
 
+class RolEnum(str, enum.Enum):
+    CLIENTE  = "cliente"
+    OPERADOR = "operador"
+    ADMIN    = "admin"
+
 class Usuario(Base):
     __tablename__ = "usuarios"
-    id          = Column(Integer, primary_key=True, index=True)
-    nombre      = Column(String(100), nullable=False)
-    apellido    = Column(String(100), nullable=False)
-    email       = Column(String(150), unique=True, nullable=False)
-    telefono    = Column(String(20), nullable=True)
-    activo      = Column(Boolean, default=True)
-    fecha_alta  = Column(DateTime, default=datetime.utcnow)
-    reservas    = relationship("Reserva", back_populates="usuario")
+    id           = Column(Integer, primary_key=True, index=True)
+    nombre       = Column(String(100), nullable=False)
+    apellido     = Column(String(100), nullable=False)
+    email        = Column(String(150), unique=True, nullable=False)
+    telefono     = Column(String(20), nullable=True)
+    password     = Column(String(255), nullable=False)
+    rol          = Column(SAEnum(RolEnum), default=RolEnum.CLIENTE)
+    activo       = Column(Boolean, default=True)
+    fecha_alta   = Column(DateTime, default=datetime.utcnow)
+    reservas     = relationship("Reserva", back_populates="usuario")
 
 class Empleado(Base):
     __tablename__ = "empleados"
