@@ -1,19 +1,24 @@
-from src.servicios.modelo import Servicio
-from src.servicios.rutas import base_datos_servicios, crear_servicio, listar_servicios
+from fastapi.testclient import TestClient
+from main import app
 
-def test_crear_servicio():
-    servicio_prueba = Servicio(
-        nombre="Atención al Cliente",
-        descripcion="Consulta y reclamos",
-        tiempo_estimado_base=15,
-        requisitos="DNI"
-    )
+client = TestClient(app)
 
-    resultado = crear_servicio(servicio_prueba)
-    assert resultado.nombre == "Atención al Cliente"
-    assert resultado.id == 1
-    assert len(base_datos_servicios) == 1
+def test_listar_tipo_eventos():
+    response = client.get("/api/tipo-eventos/")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
 
-def test_listar_servicios():
-    lista = listar_servicios()
-    assert isinstance(lista, list)
+def test_crear_tipo_evento():
+    response = client.post("/api/tipo-eventos/", json={
+        "nombre":          "Apertura de cuenta",
+        "descripcion":     "Trámite para abrir cuenta bancaria",
+        "tiempo_base_min": 15,
+        "requisitos":      "DNI y comprobante de domicilio",
+        "activo":          True
+    })
+    assert response.status_code == 201
+    assert response.json()["nombre"] == "Apertura de cuenta"
+
+def test_tipo_evento_no_existe():
+    response = client.get("/api/tipo-eventos/9999")
+    assert response.status_code == 404
