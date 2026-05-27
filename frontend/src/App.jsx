@@ -3,6 +3,7 @@ import Login from "./pages/Login"
 import PanelAdmin from "./pages/PanelAdmin"
 import PanelOperador from "./pages/PanelOperador"
 import PortalCliente from "./pages/PortalCliente"
+import DashboardSupervisor from "./pages/DashboardSupervisor"
 
 export default function App() {
   const [rol, setRol] = useState(null)
@@ -20,9 +21,10 @@ export default function App() {
     setRol(null)
   }
 
-  if (!rol) return <Login onLogin={handleLogin} />
-  if (rol === "admin")    return <PanelAdmin    onLogout={handleLogout} />
-  if (rol === "operador") return <PanelOperador onLogout={handleLogout} />
-  if (rol === "cliente")  return <PortalCliente onLogout={handleLogout} />
+  if (!rol)                 return <Login               onLogin={handleLogin} />
+  if (rol === "ADMIN")      return <PanelAdmin          onLogout={handleLogout} />
+  if (rol === "OPERADOR")   return <PanelOperador       onLogout={handleLogout} />
+  if (rol === "CLIENTE")    return <PortalCliente       onLogout={handleLogout} />
+  if (rol === "SUPERVISOR") return <DashboardSupervisor onLogout={handleLogout} />
   return <Login onLogin={handleLogin} />
 }

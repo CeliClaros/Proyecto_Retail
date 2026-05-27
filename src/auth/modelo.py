@@ -3,9 +3,10 @@ from typing import Optional
 from enum import Enum
 
 class RolUsuario(str, Enum):
-    CLIENTE  = "cliente"
-    OPERADOR = "operador"
-    ADMIN    = "admin"
+    CLIENTE    = "CLIENTE"
+    OPERADOR   = "OPERADOR"
+    ADMIN      = "ADMIN"
+    SUPERVISOR = "SUPERVISOR"
 
 class UsuarioCrear(BaseModel):
     nombre:   str

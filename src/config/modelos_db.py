@@ -18,9 +18,10 @@ class CanalNotifEnum(str, enum.Enum):
     SMS      = "sms"
 
 class RolEnum(str, enum.Enum):
-    CLIENTE  = "cliente"
-    OPERADOR = "operador"
-    ADMIN    = "admin"
+    CLIENTE    = "CLIENTE"
+    OPERADOR   = "OPERADOR"
+    ADMIN      = "ADMIN"
+    SUPERVISOR = "SUPERVISOR"
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -30,7 +31,7 @@ class Usuario(Base):
     email        = Column(String(150), unique=True, nullable=False)
     telefono     = Column(String(20), nullable=True)
     password     = Column(String(255), nullable=False)
-    rol          = Column(SAEnum(RolEnum), default=RolEnum.CLIENTE)
+    rol          = Column(SAEnum(RolEnum, name="rolenum", create_type=False), default=RolEnum.CLIENTE)
     activo       = Column(Boolean, default=True)
     fecha_alta   = Column(DateTime, default=datetime.utcnow)
     reservas     = relationship("Reserva", back_populates="usuario")
@@ -85,13 +86,13 @@ class Reserva(Base):
     id_empleado_asignado       = Column(Integer, ForeignKey("empleados.id"), nullable=True)
     id_asignacion              = Column(Integer, ForeignKey("asignaciones_diarias.id"), nullable=True)
     fecha_hora_reserva         = Column(DateTime, nullable=False)
-    estado                     = Column(SAEnum(EstadoReservaEnum), default=EstadoReservaEnum.PENDIENTE)
+    estado                     = Column(SAEnum(EstadoReservaEnum, name="estadoreservaEnum", create_type=False), default=EstadoReservaEnum.PENDIENTE)
     tiempo_espera_estimado_min = Column(Integer, default=0)
     posicion_en_cola           = Column(Integer, default=0)
     fecha_hora_checkin         = Column(DateTime, nullable=True)
     fecha_hora_checkout        = Column(DateTime, nullable=True)
     duracion_real_min          = Column(Integer, nullable=True)
-    canal_notif                = Column(SAEnum(CanalNotifEnum), default=CanalNotifEnum.WHATSAPP)
+    canal_notif                = Column(SAEnum(CanalNotifEnum, name="canalnotifEnum", create_type=False), default=CanalNotifEnum.WHATSAPP)
     notificacion_enviada       = Column(Boolean, default=False)
     ubicacion_lat              = Column(Numeric(10, 8), nullable=True)
     ubicacion_lng              = Column(Numeric(11, 8), nullable=True)
