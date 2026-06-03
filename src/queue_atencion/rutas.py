@@ -113,3 +113,9 @@ def mover_al_final(reserva_id: int, db: Session = Depends(get_db)):
         "nueva_posicion": reserva.posicion_en_cola,
         "nuevo_eta_min": reserva.tiempo_espera_estimado_min
     }
+
+@rutas_atencion.get("/mis-reservas/{id_usuario}", response_model=List[ReservaRespuesta])
+def mis_reservas(id_usuario: int, db: Session = Depends(get_db)):
+    return db.query(Reserva).filter(
+        Reserva.id_usuario == id_usuario
+    ).order_by(Reserva.fecha_hora_reserva.desc()).all()

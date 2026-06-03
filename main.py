@@ -7,8 +7,10 @@ from src.notificaciones.envio import rutas_notificaciones
 from src.asignaciones.rutas import rutas_asignaciones
 from src.auth.rutas import rutas_auth
 from src.config.base_datos import crear_tablas
+from src.config.scheduler import iniciar_scheduler
 
 crear_tablas()
+iniciar_scheduler()
 
 app = FastAPI(
     title="Sistema Gestión de Atención - Retail",
@@ -39,3 +41,9 @@ def raiz():
         "estado": "OK",
         "version": "1.0.0"
     }
+
+@app.post("/api/admin/cerrar-reservas-vencidas", tags=["Admin"])
+def cerrar_vencidas_manual():
+    from src.config.scheduler import cerrar_reservas_vencidas
+    cerrar_reservas_vencidas()
+    return {"mensaje": "Proceso de cierre ejecutado"}

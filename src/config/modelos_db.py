@@ -126,3 +126,13 @@ class PerformanceEmpleado(Base):
     ultima_actualizacion  = Column(DateTime, default=datetime.utcnow)
     empleado              = relationship("Empleado", back_populates="performance")
     tipo_evento           = relationship("TipoEvento", back_populates="performance")
+
+
+class LogSistema(Base):
+    __tablename__ = "logs_sistema"
+    id                = Column(Integer, primary_key=True, index=True)
+    fecha             = Column(DateTime, default=datetime.utcnow)
+    accion            = Column(String(100), nullable=False)
+    id_reserva        = Column(Integer, ForeignKey("reservas.id"), nullable=True)
+    descripcion       = Column(Text, nullable=True)
+    usuario_responsable = Column(String(150), nullable=True)

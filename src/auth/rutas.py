@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from src.config.base_datos import get_db
-from src.config.modelos_db import Usuario, RolEnum
-from src.auth.modelo import UsuarioCrear, UsuarioRespuesta, LoginRequest, TokenRespuesta
+from src.config.modelos_db import Usuario
+from src.auth.modelo import UsuarioCrear, UsuarioRespuesta, LoginRequest
 from src.auth.seguridad import hashear_password, verificar_password, crear_token
 from typing import List
 
@@ -12,7 +12,7 @@ rutas_auth = APIRouter()
 def registrar_usuario(datos: UsuarioCrear, db: Session = Depends(get_db)):
     existe = db.query(Usuario).filter(Usuario.email == datos.email).first()
     if existe:
-        raise HTTPException(status_code=400, detail="El email ya está registrado")
+        raise HTTPException(status_code=400, detail="El email ya esta registrado")
     usuario = Usuario(
         nombre   = datos.nombre,
         apellido = datos.apellido,
@@ -26,17 +26,19 @@ def registrar_usuario(datos: UsuarioCrear, db: Session = Depends(get_db)):
     db.refresh(usuario)
     return usuario
 
-@rutas_auth.post("/login", response_model=TokenRespuesta)
+@rutas_auth.post("/login")
 def login(datos: LoginRequest, db: Session = Depends(get_db)):
     usuario = db.query(Usuario).filter(Usuario.email == datos.email).first()
     if not usuario or not verificar_password(datos.password, usuario.password):
-        raise HTTPException(status_code=401, detail="Email o contraseña incorrectos")
-    token = crear_token({"sub": usuario.email, "rol": usuario.rol, "id": usuario.id})
+        raise HTTPException(status_code=401, detail="Email o contrasena incorrectos")
+    rol_str = usuario.rol.value if hasattr(usuario.rol, "value") else str(usuario.rol)
+    token = crear_token({"sub": usuario.email, "rol": rol_str, "id": usuario.id})
     return {
         "access_token": token,
         "token_type":   "bearer",
-        "rol":          usuario.rol,
-        "nombre":       usuario.nombre
+        "rol":          rol_str,
+        "nombre":       usuario.nombre,
+        "id":           usuario.id
     }
 
 @rutas_auth.get("/usuarios", response_model=List[UsuarioRespuesta])

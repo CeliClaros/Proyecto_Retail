@@ -16,6 +16,7 @@ export default function Login({ onLogin }) {
       localStorage.setItem("token", access_token)
       localStorage.setItem("rol", rol)
       localStorage.setItem("nombre", nombre)
+      localStorage.setItem("id", id)
       onLogin(rol)
     } catch (e) {
       setError("Email o contraseña incorrectos")
