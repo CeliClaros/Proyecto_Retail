@@ -13,16 +13,20 @@ const COLORES = {
 }
 
 export default function DashboardSupervisor({ onLogout }) {
-  const [reservas, setReservas]       = useState([])
-  const [todasReservas, setTodas]     = useState([])
-  const [tipoEventos, setTipoEventos] = useState([])
-  const [periodo, setPeriodo]         = useState("semana")
-  const [expandido, setExpandido]     = useState(null)
-  const [loading, setLoading]         = useState(false)
+  const [reservas, setReservas]               = useState([])
+  const [todasReservas, setTodas]             = useState([])
+  const [tipoEventos, setTipoEventos]         = useState([])
+  const [periodo, setPeriodo]                 = useState("semana")
+  const [expandido, setExpandido]             = useState(null)
+  const [loading, setLoading]                 = useState(false)
+  const [fechaHistorico, setFechaHistorico]   = useState(() => new Date().toISOString().split("T")[0])
+  const [reservasHistorico, setReservasHistorico] = useState([])
+  const [loadingHistorico, setLoadingHistorico]   = useState(false)
   const nombre = localStorage.getItem("nombre")
 
   useEffect(() => { cargarDatos() }, [])
   useEffect(() => { setReservas(filtrarPorPeriodo(todasReservas)) }, [periodo, todasReservas])
+  useEffect(() => { cargarHistorico(fechaHistorico) }, [])
 
   const cargarDatos = async () => {
     setLoading(true)
@@ -39,6 +43,28 @@ export default function DashboardSupervisor({ onLogout }) {
     } finally {
       setLoading(false)
     }
+  }
+
+  const cargarHistorico = async (fecha) => {
+    setLoadingHistorico(true)
+    try {
+      const r = await api.get(`/reservas/por-fecha?fecha=${fecha}`)
+      setReservasHistorico(r.data)
+    } catch (e) {
+      console.error(e)
+      setReservasHistorico([])
+    } finally {
+      setLoadingHistorico(false)
+    }
+  }
+
+  const cambiarFecha = (dias) => {
+    const nueva = new Date(fechaHistorico + "T00:00:00")
+    nueva.setDate(nueva.getDate() + dias)
+    if (nueva > new Date()) return
+    const fechaStr = nueva.toISOString().split("T")[0]
+    setFechaHistorico(fechaStr)
+    cargarHistorico(fechaStr)
   }
 
   const filtrarPorPeriodo = (data) => {
@@ -84,11 +110,16 @@ export default function DashboardSupervisor({ onLogout }) {
     Pendientes: reservas.filter(r => r.id_tipo_evento === te.id && r.estado === "PENDIENTE").length,
   })).filter(d => d.Atendidas > 0 || d.Pendientes > 0)
 
-  const totalAtendidas = reservas.filter(r => r.estado === "ATENDIDA").length
-  const totalReservas  = reservas.length
-  const pctAtendidas   = totalReservas > 0 ? Math.round((totalAtendidas / totalReservas) * 100) : 0
-  const semaforoColor  = pctAtendidas >= 80 ? "text-green-600" : pctAtendidas >= 50 ? "text-yellow-500" : "text-red-500"
-  const semaforoBg     = pctAtendidas >= 80 ? "bg-green-50 border-green-200" : pctAtendidas >= 50 ? "bg-yellow-50 border-yellow-200" : "bg-red-50 border-red-200"
+  const totalAtendidas  = reservas.filter(r => r.estado === "ATENDIDA").length
+  const totalReservas   = reservas.length
+  const pctAtendidas    = totalReservas > 0 ? Math.round((totalAtendidas / totalReservas) * 100) : 0
+  const semaforoColor   = pctAtendidas >= 80 ? "text-green-600" : pctAtendidas >= 50 ? "text-yellow-500" : "text-red-500"
+  const semaforoBg      = pctAtendidas >= 80 ? "bg-green-50 border-green-200" : pctAtendidas >= 50 ? "bg-yellow-50 border-yellow-200" : "bg-red-50 border-red-200"
+
+  const totalHistorico      = reservasHistorico.length
+  const atendidasHistorico  = reservasHistorico.filter(r => r.estado === "ATENDIDA").length
+  const canceladasHistorico = reservasHistorico.filter(r => r.estado === "CANCELADA").length
+  const pctHistorico        = totalHistorico > 0 ? Math.round((atendidasHistorico / totalHistorico) * 100) : 0
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -120,10 +151,11 @@ export default function DashboardSupervisor({ onLogout }) {
           Mostrando: <strong>{reservas.length}</strong> reservas del período — Total en sistema: <strong>{todasReservas.length}</strong>
         </div>
 
+        {/* KPIs período */}
         <div className="grid grid-cols-4 gap-4">
           {[
-            { label: "Total Reservas", value: totalReservas, color: "text-blue-600", bg: "bg-blue-50 border-blue-200" },
-            { label: "Atendidas",      value: totalAtendidas, color: "text-green-600", bg: "bg-green-50 border-green-200" },
+            { label: "Total Reservas", value: totalReservas,  color: "text-blue-600",   bg: "bg-blue-50 border-blue-200" },
+            { label: "Atendidas",      value: totalAtendidas, color: "text-green-600",  bg: "bg-green-50 border-green-200" },
             { label: "En Curso",       value: reservas.filter(r => r.estado === "EN_CURSO").length, color: "text-orange-600", bg: "bg-orange-50 border-orange-200" },
             { label: "% Completadas",  value: pctAtendidas + "%", color: semaforoColor, bg: semaforoBg },
           ].map(k => (
@@ -134,6 +166,7 @@ export default function DashboardSupervisor({ onLogout }) {
           ))}
         </div>
 
+        {/* Gráficos */}
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-xl shadow p-6">
             <h3 className="font-semibold text-gray-700 mb-4">Estado de Reservas</h3>
@@ -173,6 +206,7 @@ export default function DashboardSupervisor({ onLogout }) {
           </div>
         </div>
 
+        {/* Detalle por tipo de trámite */}
         <div>
           <h3 className="font-semibold text-gray-700 mb-4 text-lg">Detalle por Tipo de Trámite</h3>
           {reservasPorEvento.length === 0 && (
@@ -236,6 +270,88 @@ export default function DashboardSupervisor({ onLogout }) {
             ))}
           </div>
         </div>
+
+        {/* Histórico navegable por fecha */}
+        <div>
+          <h3 className="font-semibold text-gray-700 mb-4 text-lg">Histórico por Día</h3>
+
+          <div className="bg-white rounded-xl shadow px-6 py-4 flex items-center justify-between mb-4">
+            <button onClick={() => cambiarFecha(-1)}
+              className="flex items-center gap-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 py-2 rounded-lg transition font-medium">
+              ← Día anterior
+            </button>
+            <div className="text-center">
+              <p className="font-semibold text-gray-800 text-lg">
+                {new Date(fechaHistorico + "T00:00:00").toLocaleDateString("es-AR", {
+                  weekday: "long", year: "numeric", month: "long", day: "numeric"
+                })}
+              </p>
+              <p className="text-sm text-gray-500">{reservasHistorico.length} reservas ese día</p>
+            </div>
+            <button onClick={() => cambiarFecha(+1)}
+              disabled={fechaHistorico === new Date().toISOString().split("T")[0]}
+              className="flex items-center gap-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 py-2 rounded-lg transition font-medium disabled:opacity-40 disabled:cursor-not-allowed">
+              Día siguiente →
+            </button>
+          </div>
+
+          <div className="grid grid-cols-4 gap-4 mb-4">
+            {[
+              { label: "Total",         value: totalHistorico,      color: "text-blue-600",   bg: "bg-blue-50 border-blue-200" },
+              { label: "Atendidas",     value: atendidasHistorico,  color: "text-green-600",  bg: "bg-green-50 border-green-200" },
+              { label: "Canceladas",    value: canceladasHistorico, color: "text-red-600",    bg: "bg-red-50 border-red-200" },
+              { label: "% Completadas", value: totalHistorico > 0 ? pctHistorico + "%" : "—", color: "text-indigo-600", bg: "bg-indigo-50 border-indigo-200" },
+            ].map(k => (
+              <div key={k.label} className={"rounded-xl p-4 border text-center " + k.bg}>
+                <p className={"text-2xl font-bold " + k.color}>{k.value}</p>
+                <p className="text-gray-500 text-sm mt-1">{k.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {loadingHistorico ? (
+            <p className="text-gray-400 bg-white rounded-xl p-6 text-center">Cargando...</p>
+          ) : reservasHistorico.length === 0 ? (
+            <p className="text-gray-400 bg-white rounded-xl p-6 text-center">Sin reservas para esta fecha</p>
+          ) : (
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 border-b">
+                  <tr className="text-left text-gray-500">
+                    <th className="px-6 py-3">#</th>
+                    <th className="px-6 py-3">Hora</th>
+                    <th className="px-6 py-3">Tipo de Trámite</th>
+                    <th className="px-6 py-3">Estado</th>
+                    <th className="px-6 py-3">Duración real</th>
+                    <th className="px-6 py-3">ETA estimado</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {reservasHistorico.map(r => (
+                    <tr key={r.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-3 font-medium">#{r.id}</td>
+                      <td className="px-6 py-3">
+                        {new Date(r.fecha_hora_reserva).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}
+                      </td>
+                      <td className="px-6 py-3">
+                        {tipoEventos.find(te => te.id === r.id_tipo_evento)?.nombre || "—"}
+                      </td>
+                      <td className="px-6 py-3">
+                        <span style={{ backgroundColor: COLORES[r.estado] + "30", color: COLORES[r.estado] }}
+                          className="px-2 py-1 rounded-full text-xs font-medium">
+                          {r.estado}
+                        </span>
+                      </td>
+                      <td className="px-6 py-3">{r.duracion_real_min ? r.duracion_real_min + " min" : "—"}</td>
+                      <td className="px-6 py-3">{r.tiempo_espera_estimado_min} min</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   )
