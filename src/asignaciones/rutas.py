@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import List
 from src.config.base_datos import get_db
-from src.config.modelos_db import AsignacionDiaria, Empleado, TipoEvento
+from src.config.modelos_db import AsignacionDiaria, Empleado, TipoEvento, Usuario
 from src.asignaciones.modelo import AsignacionCrear, AsignacionRespuesta, AsignacionTransferir
 from src.asignaciones.logica import obtener_asignacion_activa, obtener_ranking_empleados, sugerir_rotacion
 
@@ -79,6 +79,44 @@ def transferir_asignacion(asignacion_id: int, datos: AsignacionTransferir, db: S
     db.commit()
     db.refresh(nueva)
     return {"mensaje": f"Asignación transferida a {empleado_nuevo.nombre} {empleado_nuevo.apellido}", "nueva_asignacion_id": nueva.id}
+
+@rutas_asignaciones.get("/mi-asignacion-hoy")
+def mi_asignacion_hoy(email: str, db: Session = Depends(get_db)):
+    from datetime import date
+    usuario = db.query(Usuario).filter(Usuario.email == email).first()
+    if not usuario or not usuario.id_empleado:
+        return {"asignacion": None, "mensaje": "Sin asignación vinculada"}
+    hoy = date.today()
+    asig = db.query(AsignacionDiaria).filter(
+        AsignacionDiaria.id_empleado    == usuario.id_empleado,
+        AsignacionDiaria.activo         == True,
+        AsignacionDiaria.fecha          >= datetime.combine(hoy, datetime.min.time()),
+        AsignacionDiaria.fecha          <  datetime.combine(hoy, datetime.max.time()),
+    ).order_by(AsignacionDiaria.id.desc()).first()
+    if not asig:
+        # fallback: última asignación activa sin filtro de fecha
+        asig = db.query(AsignacionDiaria).filter(
+            AsignacionDiaria.id_empleado == usuario.id_empleado,
+            AsignacionDiaria.activo      == True,
+        ).order_by(AsignacionDiaria.id.desc()).first()
+    if not asig:
+        return {"asignacion": None, "mensaje": "Sin asignación para hoy"}
+    tipo = db.query(TipoEvento).filter(TipoEvento.id == asig.id_tipo_evento).first()
+    empleado = db.query(Empleado).filter(Empleado.id == usuario.id_empleado).first()
+    return {
+        "asignacion": {
+            "id":               asig.id,
+            "id_tipo_evento":   asig.id_tipo_evento,
+            "nombre_evento":    tipo.nombre if tipo else "—",
+            "tiempo_base_min":  tipo.tiempo_base_min if tipo else 0,
+            "hora_inicio":      asig.hora_inicio,
+            "hora_fin":         asig.hora_fin,
+            "empleado":         f"{empleado.nombre} {empleado.apellido}" if empleado else "—",
+            "legajo":           empleado.legajo if empleado else "—",
+        },
+        "mensaje": "OK"
+    }
+
 
 @rutas_asignaciones.get("/ranking/{id_tipo_evento}", summary="Ranking de empleados por tipo de trámite")
 def ranking_empleados(id_tipo_evento: int, db: Session = Depends(get_db)):
