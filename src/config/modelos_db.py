@@ -34,6 +34,7 @@ class Usuario(Base):
     rol          = Column(SAEnum(RolEnum, name="rolenum", create_type=False), default=RolEnum.CLIENTE)
     activo       = Column(Boolean, default=True)
     fecha_alta   = Column(DateTime, default=datetime.utcnow)
+    id_empleado  = Column(Integer, ForeignKey("empleados.id"), nullable=True)
     reservas     = relationship("Reserva", back_populates="usuario")
 
 class Empleado(Base):
