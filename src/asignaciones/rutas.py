@@ -128,3 +128,19 @@ def sugerir(asignacion_id: int, db: Session = Depends(get_db)):
     if not asig:
         raise HTTPException(status_code=404, detail="Asignación no encontrada")
     return sugerir_rotacion(db, asig.id_tipo_evento, asig.id_empleado)
+
+@rutas_asignaciones.get("/performance-general", summary="Performance de todos los empleados por tipo de evento")
+def performance_general(db: Session = Depends(get_db)):
+    from src.config.modelos_db import TipoEvento
+    tipos = db.query(TipoEvento).filter(TipoEvento.activo == True).all()
+    resultado = []
+    for tipo in tipos:
+        ranking = obtener_ranking_empleados(db, tipo.id)
+        if ranking:
+            resultado.append({
+                "id_tipo_evento":   tipo.id,
+                "nombre_evento":    tipo.nombre,
+                "tiempo_base_min":  tipo.tiempo_base_min,
+                "empleados":        ranking
+            })
+    return resultado

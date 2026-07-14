@@ -12,11 +12,12 @@ export default function Login({ onLogin }) {
     setError("")
     try {
       const res = await api.post("/auth/login", { email, password })
-      const { access_token, rol, nombre } = res.data
+      const { access_token, rol, nombre, id } = res.data
       localStorage.setItem("token", access_token)
       localStorage.setItem("rol", rol)
       localStorage.setItem("nombre", nombre)
       localStorage.setItem("id", id)
+      localStorage.setItem("email", email)
       onLogin(rol)
     } catch (e) {
       setError("Email o contraseña incorrectos")

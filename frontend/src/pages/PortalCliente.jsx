@@ -148,7 +148,7 @@ export default function PortalCliente({ onLogout }) {
               )}
 
               <div className="flex gap-3 mt-2 flex-wrap">
-                {r.ubicacion_lat && r.ubicacion_lng && (
+                {r.ubicacion_lat && r.ubicacion_lng && ["PENDIENTE","CONFIRMADA","EN_ESPERA","EN_CURSO"].includes(r.estado) && (
                   <a href={getMapsUrl(r.ubicacion_lat, r.ubicacion_lng)} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
                     <MapPin size={14} /> Ver ruta

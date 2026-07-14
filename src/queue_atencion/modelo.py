@@ -33,6 +33,8 @@ class ReservaRespuesta(BaseModel):
     fecha_hora_checkout:        Optional[datetime] = None
     duracion_real_min:          Optional[int] = None
     canal_notif:                Optional[str] = None
+    ubicacion_lat:              Optional[float] = None
+    ubicacion_lng:              Optional[float] = None
     fecha_alta:                 datetime
 
     class Config:
