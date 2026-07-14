@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import api from "../services/api"
-import { LogOut, RefreshCw, ChevronDown, ChevronUp } from "lucide-react"
+import { LogOut, RefreshCw, ChevronDown, ChevronUp, TrendingUp } from "lucide-react"
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts"
 
 const COLORES = {
@@ -12,10 +12,13 @@ const COLORES = {
   CANCELADA:  "#EF4444",
 }
 
+const MEDALLA = ["🥇","🥈","🥉"]
+
 export default function DashboardSupervisor({ onLogout }) {
   const [reservas, setReservas]               = useState([])
   const [todasReservas, setTodas]             = useState([])
   const [tipoEventos, setTipoEventos]         = useState([])
+  const [performance, setPerformance]         = useState([])
   const [periodo, setPeriodo]                 = useState("semana")
   const [expandido, setExpandido]             = useState(null)
   const [loading, setLoading]                 = useState(false)
@@ -31,13 +34,15 @@ export default function DashboardSupervisor({ onLogout }) {
   const cargarDatos = async () => {
     setLoading(true)
     try {
-      const [r, t] = await Promise.all([
+      const [r, t, p] = await Promise.all([
         api.get("/reservas/"),
         api.get("/tipo-eventos/"),
+        api.get("/asignaciones/performance-general"),
       ])
       setTodas(r.data)
       setReservas(filtrarPorPeriodo(r.data))
       setTipoEventos(t.data)
+      setPerformance(p.data)
     } catch (e) {
       console.error(e)
     } finally {
@@ -72,15 +77,9 @@ export default function DashboardSupervisor({ onLogout }) {
     const ahora = new Date()
     return data.filter(r => {
       const fecha = new Date(r.fecha_hora_reserva)
-      if (periodo === "hoy") {
-        return fecha.toDateString() === ahora.toDateString()
-      } else if (periodo === "semana") {
-        const hace7 = new Date(ahora.getTime() - 7 * 24 * 60 * 60 * 1000)
-        return fecha >= hace7
-      } else {
-        const hace30 = new Date(ahora.getTime() - 30 * 24 * 60 * 60 * 1000)
-        return fecha >= hace30
-      }
+      if (periodo === "hoy") return fecha.toDateString() === ahora.toDateString()
+      else if (periodo === "semana") return fecha >= new Date(ahora.getTime() - 7*24*60*60*1000)
+      else return fecha >= new Date(ahora.getTime() - 30*24*60*60*1000)
     })
   }
 
@@ -98,28 +97,25 @@ export default function DashboardSupervisor({ onLogout }) {
   }).filter(te => te.total > 0)
 
   const donutData = Object.entries(
-    reservas.reduce((acc, r) => {
-      acc[r.estado] = (acc[r.estado] || 0) + 1
-      return acc
-    }, {})
+    reservas.reduce((acc, r) => { acc[r.estado] = (acc[r.estado]||0)+1; return acc }, {})
   ).map(([name, value]) => ({ name, value }))
 
   const barData = tipoEventos.map(te => ({
-    name:       te.nombre.substring(0, 12),
-    Atendidas:  reservas.filter(r => r.id_tipo_evento === te.id && r.estado === "ATENDIDA").length,
-    Pendientes: reservas.filter(r => r.id_tipo_evento === te.id && r.estado === "PENDIENTE").length,
-  })).filter(d => d.Atendidas > 0 || d.Pendientes > 0)
+    name:       te.nombre.substring(0,12),
+    Atendidas:  reservas.filter(r => r.id_tipo_evento===te.id && r.estado==="ATENDIDA").length,
+    Pendientes: reservas.filter(r => r.id_tipo_evento===te.id && r.estado==="PENDIENTE").length,
+  })).filter(d => d.Atendidas>0 || d.Pendientes>0)
 
-  const totalAtendidas  = reservas.filter(r => r.estado === "ATENDIDA").length
-  const totalReservas   = reservas.length
-  const pctAtendidas    = totalReservas > 0 ? Math.round((totalAtendidas / totalReservas) * 100) : 0
-  const semaforoColor   = pctAtendidas >= 80 ? "text-green-600" : pctAtendidas >= 50 ? "text-yellow-500" : "text-red-500"
-  const semaforoBg      = pctAtendidas >= 80 ? "bg-green-50 border-green-200" : pctAtendidas >= 50 ? "bg-yellow-50 border-yellow-200" : "bg-red-50 border-red-200"
+  const totalAtendidas = reservas.filter(r => r.estado==="ATENDIDA").length
+  const totalReservas  = reservas.length
+  const pctAtendidas   = totalReservas>0 ? Math.round((totalAtendidas/totalReservas)*100) : 0
+  const semaforoColor  = pctAtendidas>=80 ? "text-green-600" : pctAtendidas>=50 ? "text-yellow-500" : "text-red-500"
+  const semaforoBg     = pctAtendidas>=80 ? "bg-green-50 border-green-200" : pctAtendidas>=50 ? "bg-yellow-50 border-yellow-200" : "bg-red-50 border-red-200"
 
   const totalHistorico      = reservasHistorico.length
-  const atendidasHistorico  = reservasHistorico.filter(r => r.estado === "ATENDIDA").length
-  const canceladasHistorico = reservasHistorico.filter(r => r.estado === "CANCELADA").length
-  const pctHistorico        = totalHistorico > 0 ? Math.round((atendidasHistorico / totalHistorico) * 100) : 0
+  const atendidasHistorico  = reservasHistorico.filter(r => r.estado==="ATENDIDA").length
+  const canceladasHistorico = reservasHistorico.filter(r => r.estado==="CANCELADA").length
+  const pctHistorico        = totalHistorico>0 ? Math.round((atendidasHistorico/totalHistorico)*100) : 0
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -131,7 +127,7 @@ export default function DashboardSupervisor({ onLogout }) {
         <div className="flex items-center gap-4">
           {["hoy","semana","mes"].map(p => (
             <button key={p} onClick={() => setPeriodo(p)}
-              className={"px-4 py-2 rounded-lg capitalize transition " + (periodo === p ? "bg-white text-indigo-800 font-semibold" : "hover:bg-indigo-700")}>
+              className={"px-4 py-2 rounded-lg capitalize transition "+(periodo===p?"bg-white text-indigo-800 font-semibold":"hover:bg-indigo-700")}>
               {p}
             </button>
           ))}
@@ -154,13 +150,13 @@ export default function DashboardSupervisor({ onLogout }) {
         {/* KPIs período */}
         <div className="grid grid-cols-4 gap-4">
           {[
-            { label: "Total Reservas", value: totalReservas,  color: "text-blue-600",   bg: "bg-blue-50 border-blue-200" },
-            { label: "Atendidas",      value: totalAtendidas, color: "text-green-600",  bg: "bg-green-50 border-green-200" },
-            { label: "En Curso",       value: reservas.filter(r => r.estado === "EN_CURSO").length, color: "text-orange-600", bg: "bg-orange-50 border-orange-200" },
-            { label: "% Completadas",  value: pctAtendidas + "%", color: semaforoColor, bg: semaforoBg },
+            { label: "Total Reservas", value: totalReservas,      color: "text-blue-600",   bg: "bg-blue-50 border-blue-200" },
+            { label: "Atendidas",      value: totalAtendidas,     color: "text-green-600",  bg: "bg-green-50 border-green-200" },
+            { label: "En Curso",       value: reservas.filter(r=>r.estado==="EN_CURSO").length, color: "text-orange-600", bg: "bg-orange-50 border-orange-200" },
+            { label: "% Completadas",  value: pctAtendidas+"%",   color: semaforoColor,     bg: semaforoBg },
           ].map(k => (
-            <div key={k.label} className={"rounded-xl p-6 border " + k.bg}>
-              <p className={"text-3xl font-bold " + k.color}>{k.value}</p>
+            <div key={k.label} className={"rounded-xl p-6 border "+k.bg}>
+              <p className={"text-3xl font-bold "+k.color}>{k.value}</p>
               <p className="text-gray-500 text-sm mt-1">{k.label}</p>
             </div>
           ))}
@@ -170,29 +166,25 @@ export default function DashboardSupervisor({ onLogout }) {
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-xl shadow p-6">
             <h3 className="font-semibold text-gray-700 mb-4">Estado de Reservas</h3>
-            {donutData.length > 0 ? (
+            {donutData.length>0 ? (
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie data={donutData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} dataKey="value"
-                    label={({name, value}) => name + ": " + value}>
-                    {donutData.map((entry, i) => (
-                      <Cell key={i} fill={COLORES[entry.name] || "#94A3B8"} />
-                    ))}
+                    label={({name,value})=>name+": "+value}>
+                    {donutData.map((entry,i) => <Cell key={i} fill={COLORES[entry.name]||"#94A3B8"} />)}
                   </Pie>
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
-            ) : (
-              <p className="text-center text-gray-400 py-16">Sin datos para este período</p>
-            )}
+            ) : <p className="text-center text-gray-400 py-16">Sin datos para este período</p>}
           </div>
 
           <div className="bg-white rounded-xl shadow p-6">
             <h3 className="font-semibold text-gray-700 mb-4">Atenciones por Tipo de Trámite</h3>
-            {barData.length > 0 ? (
+            {barData.length>0 ? (
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={barData}>
-                  <XAxis dataKey="name" tick={{fontSize: 11}} />
+                  <XAxis dataKey="name" tick={{fontSize:11}} />
                   <YAxis />
                   <Tooltip />
                   <Legend />
@@ -200,16 +192,73 @@ export default function DashboardSupervisor({ onLogout }) {
                   <Bar dataKey="Pendientes" fill="#EAB308" />
                 </BarChart>
               </ResponsiveContainer>
-            ) : (
-              <p className="text-center text-gray-400 py-16">Sin datos para este período</p>
-            )}
+            ) : <p className="text-center text-gray-400 py-16">Sin datos para este período</p>}
           </div>
+        </div>
+
+        {/* Performance por empleado */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp size={20} className="text-indigo-600" />
+            <h3 className="font-semibold text-gray-700 text-lg">Performance por Empleado</h3>
+          </div>
+          {performance.length===0 ? (
+            <p className="text-gray-400 bg-white rounded-xl p-6 text-center">Sin datos de performance todavía — se generan al hacer checkout de atenciones</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              {performance.map(tipo => (
+                <div key={tipo.id_tipo_evento} className="bg-white rounded-xl shadow overflow-hidden">
+                  <div className="px-6 py-3 bg-indigo-50 border-b flex justify-between items-center">
+                    <h4 className="font-semibold text-indigo-800">{tipo.nombre_evento}</h4>
+                    <span className="text-xs text-indigo-500">Base: {tipo.tiempo_base_min} min</span>
+                  </div>
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-50 border-b">
+                      <tr className="text-left text-gray-500 text-xs">
+                        <th className="px-4 py-2">#</th>
+                        <th className="px-4 py-2">Empleado</th>
+                        <th className="px-4 py-2">Legajo</th>
+                        <th className="px-4 py-2 text-center">Atenciones</th>
+                        <th className="px-4 py-2 text-center">Prom. duración</th>
+                        <th className="px-4 py-2 text-center">vs Base</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {tipo.empleados.map((emp, idx) => {
+                        const diff = emp.promedio_min - tipo.tiempo_base_min
+                        const diffColor = diff<=0 ? "text-green-600" : diff<=5 ? "text-yellow-600" : "text-red-600"
+                        const diffLabel = diff<=0 ? `${Math.abs(diff).toFixed(1)} min más rápido` : `${diff.toFixed(1)} min más lento`
+                        return (
+                          <tr key={emp.id_empleado} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 text-lg">{MEDALLA[idx]||idx+1}</td>
+                            <td className="px-4 py-3 font-medium text-gray-800">{emp.nombre}</td>
+                            <td className="px-4 py-3 text-gray-500 text-xs">{emp.legajo}</td>
+                            <td className="px-4 py-3 text-center">
+                              <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                                {emp.total_atenciones}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-center font-semibold text-gray-700">
+                              {emp.promedio_min.toFixed(1)} min
+                            </td>
+                            <td className={"px-4 py-3 text-center text-xs font-medium "+diffColor}>
+                              {diffLabel}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Detalle por tipo de trámite */}
         <div>
           <h3 className="font-semibold text-gray-700 mb-4 text-lg">Detalle por Tipo de Trámite</h3>
-          {reservasPorEvento.length === 0 && (
+          {reservasPorEvento.length===0 && (
             <p className="text-gray-400 bg-white rounded-xl p-6 text-center">Sin datos para este período</p>
           )}
           <div className="grid grid-cols-2 gap-4">
@@ -226,19 +275,19 @@ export default function DashboardSupervisor({ onLogout }) {
                     { label: "Atendidas",  value: te.atendidas,  color: "text-green-600 bg-green-50" },
                     { label: "Canceladas", value: te.canceladas, color: "text-red-600 bg-red-50" },
                   ].map(s => (
-                    <div key={s.label} className={"rounded-lg p-2 " + s.color}>
+                    <div key={s.label} className={"rounded-lg p-2 "+s.color}>
                       <p className="text-xl font-bold">{s.value}</p>
                       <p className="text-xs">{s.label}</p>
                     </div>
                   ))}
                 </div>
                 <div className="px-6 pb-4">
-                  <button onClick={() => setExpandido(expandido === te.id ? null : te.id)}
+                  <button onClick={() => setExpandido(expandido===te.id ? null : te.id)}
                     className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                    {expandido === te.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    {expandido === te.id ? "Ocultar detalle" : "Ver detalle"}
+                    {expandido===te.id ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
+                    {expandido===te.id ? "Ocultar detalle" : "Ver detalle"}
                   </button>
-                  {expandido === te.id && (
+                  {expandido===te.id && (
                     <table className="w-full text-xs mt-3">
                       <thead>
                         <tr className="text-left text-gray-500 border-b">
@@ -249,15 +298,13 @@ export default function DashboardSupervisor({ onLogout }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {te.reservas.slice(0, 8).map(r => (
+                        {te.reservas.slice(0,8).map(r => (
                           <tr key={r.id} className="border-b last:border-0">
                             <td className="py-1">#{r.id}</td>
                             <td className="py-1">{new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}</td>
                             <td className="py-1">
-                              <span style={{backgroundColor: COLORES[r.estado] + "30", color: COLORES[r.estado]}}
-                                className="px-2 py-0.5 rounded-full text-xs font-medium">
-                                {r.estado}
-                              </span>
+                              <span style={{backgroundColor:COLORES[r.estado]+"30",color:COLORES[r.estado]}}
+                                className="px-2 py-0.5 rounded-full text-xs font-medium">{r.estado}</span>
                             </td>
                             <td className="py-1">{r.tiempo_espera_estimado_min}min</td>
                           </tr>
@@ -271,10 +318,9 @@ export default function DashboardSupervisor({ onLogout }) {
           </div>
         </div>
 
-        {/* Histórico navegable por fecha */}
+        {/* Histórico navegable */}
         <div>
           <h3 className="font-semibold text-gray-700 mb-4 text-lg">Histórico por Día</h3>
-
           <div className="bg-white rounded-xl shadow px-6 py-4 flex items-center justify-between mb-4">
             <button onClick={() => cambiarFecha(-1)}
               className="flex items-center gap-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 py-2 rounded-lg transition font-medium">
@@ -282,14 +328,12 @@ export default function DashboardSupervisor({ onLogout }) {
             </button>
             <div className="text-center">
               <p className="font-semibold text-gray-800 text-lg">
-                {new Date(fechaHistorico + "T00:00:00").toLocaleDateString("es-AR", {
-                  weekday: "long", year: "numeric", month: "long", day: "numeric"
-                })}
+                {new Date(fechaHistorico+"T00:00:00").toLocaleDateString("es-AR",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}
               </p>
               <p className="text-sm text-gray-500">{reservasHistorico.length} reservas ese día</p>
             </div>
             <button onClick={() => cambiarFecha(+1)}
-              disabled={fechaHistorico === new Date().toISOString().split("T")[0]}
+              disabled={fechaHistorico===new Date().toISOString().split("T")[0]}
               className="flex items-center gap-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 py-2 rounded-lg transition font-medium disabled:opacity-40 disabled:cursor-not-allowed">
               Día siguiente →
             </button>
@@ -300,10 +344,10 @@ export default function DashboardSupervisor({ onLogout }) {
               { label: "Total",         value: totalHistorico,      color: "text-blue-600",   bg: "bg-blue-50 border-blue-200" },
               { label: "Atendidas",     value: atendidasHistorico,  color: "text-green-600",  bg: "bg-green-50 border-green-200" },
               { label: "Canceladas",    value: canceladasHistorico, color: "text-red-600",    bg: "bg-red-50 border-red-200" },
-              { label: "% Completadas", value: totalHistorico > 0 ? pctHistorico + "%" : "—", color: "text-indigo-600", bg: "bg-indigo-50 border-indigo-200" },
+              { label: "% Completadas", value: totalHistorico>0 ? pctHistorico+"%" : "—", color: "text-indigo-600", bg: "bg-indigo-50 border-indigo-200" },
             ].map(k => (
-              <div key={k.label} className={"rounded-xl p-4 border text-center " + k.bg}>
-                <p className={"text-2xl font-bold " + k.color}>{k.value}</p>
+              <div key={k.label} className={"rounded-xl p-4 border text-center "+k.bg}>
+                <p className={"text-2xl font-bold "+k.color}>{k.value}</p>
                 <p className="text-gray-500 text-sm mt-1">{k.label}</p>
               </div>
             ))}
@@ -311,7 +355,7 @@ export default function DashboardSupervisor({ onLogout }) {
 
           {loadingHistorico ? (
             <p className="text-gray-400 bg-white rounded-xl p-6 text-center">Cargando...</p>
-          ) : reservasHistorico.length === 0 ? (
+          ) : reservasHistorico.length===0 ? (
             <p className="text-gray-400 bg-white rounded-xl p-6 text-center">Sin reservas para esta fecha</p>
           ) : (
             <div className="bg-white rounded-xl shadow overflow-hidden">
@@ -330,19 +374,13 @@ export default function DashboardSupervisor({ onLogout }) {
                   {reservasHistorico.map(r => (
                     <tr key={r.id} className="hover:bg-gray-50">
                       <td className="px-6 py-3 font-medium">#{r.id}</td>
+                      <td className="px-6 py-3">{new Date(r.fecha_hora_reserva).toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"})}</td>
+                      <td className="px-6 py-3">{tipoEventos.find(te=>te.id===r.id_tipo_evento)?.nombre||"—"}</td>
                       <td className="px-6 py-3">
-                        {new Date(r.fecha_hora_reserva).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}
+                        <span style={{backgroundColor:COLORES[r.estado]+"30",color:COLORES[r.estado]}}
+                          className="px-2 py-1 rounded-full text-xs font-medium">{r.estado}</span>
                       </td>
-                      <td className="px-6 py-3">
-                        {tipoEventos.find(te => te.id === r.id_tipo_evento)?.nombre || "—"}
-                      </td>
-                      <td className="px-6 py-3">
-                        <span style={{ backgroundColor: COLORES[r.estado] + "30", color: COLORES[r.estado] }}
-                          className="px-2 py-1 rounded-full text-xs font-medium">
-                          {r.estado}
-                        </span>
-                      </td>
-                      <td className="px-6 py-3">{r.duracion_real_min ? r.duracion_real_min + " min" : "—"}</td>
+                      <td className="px-6 py-3">{r.duracion_real_min ? r.duracion_real_min+" min" : "—"}</td>
                       <td className="px-6 py-3">{r.tiempo_espera_estimado_min} min</td>
                     </tr>
                   ))}
@@ -351,7 +389,6 @@ export default function DashboardSupervisor({ onLogout }) {
             </div>
           )}
         </div>
-
       </div>
     </div>
   )
