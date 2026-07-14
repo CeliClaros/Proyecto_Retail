@@ -74,7 +74,6 @@ export default function PanelOperador({ onLogout }) {
     EN_CURSO:   "bg-orange-100 text-orange-800",
   }
 
-  // ── Pantalla de carga ──────────────────────────────────────
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -83,7 +82,6 @@ export default function PanelOperador({ onLogout }) {
     )
   }
 
-  // ── Sin asignación ─────────────────────────────────────────
   if (!asignacion) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -100,7 +98,6 @@ export default function PanelOperador({ onLogout }) {
     )
   }
 
-  // ── Pantalla de asignación (antes de iniciar) ──────────────
   if (!iniciado) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -110,7 +107,6 @@ export default function PanelOperador({ onLogout }) {
             <h2 className="text-2xl font-bold text-gray-800">¡Buen día, {nombre}!</h2>
             <p className="text-gray-500 mt-1">Tu asignación para hoy es:</p>
           </div>
-
           <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-6">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -132,7 +128,6 @@ export default function PanelOperador({ onLogout }) {
               </div>
             </div>
           </div>
-
           <div className="flex gap-3">
             <button onClick={onLogout}
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-600 px-5 py-3 rounded-xl transition">
@@ -148,7 +143,6 @@ export default function PanelOperador({ onLogout }) {
     )
   }
 
-  // ── Panel de cola ──────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="bg-green-700 text-white px-8 py-4 flex justify-between items-center shadow">
@@ -193,27 +187,31 @@ export default function PanelOperador({ onLogout }) {
 
         <div className="bg-white rounded-xl shadow overflow-hidden">
           <div className="px-6 py-4 border-b flex justify-between items-center">
-            <h2 className="font-semibold text-gray-700">
-              Cola — {asignacion.nombre_evento}
-            </h2>
+            <div>
+              <h2 className="font-semibold text-gray-700">Cola de Atención</h2>
+              <p className="text-xs text-gray-400 mt-0.5">Trámite: <span className="font-medium text-green-700">{asignacion.nombre_evento}</span></p>
+            </div>
             <span className="text-sm text-gray-500">{reservas.length} reservas activas hoy</span>
           </div>
 
           {loadingCola && <p className="p-6 text-gray-500">Cargando...</p>}
 
           <div className="divide-y">
-            {reservas.map(r => (
+            {reservas.map((r, idx) => (
               <div key={r.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600">
-                    #{r.posicion_en_cola}
+                    {idx + 1}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-800">Reserva #{r.id}</p>
+                    <p className="font-medium text-gray-800">
+                      Reserva #{r.id}
+                      <span className="ml-2 text-xs text-gray-400 font-normal">· {asignacion.nombre_evento}</span>
+                    </p>
                     <p className="text-sm text-gray-500 flex items-center gap-1">
                       <Clock size={12} />
-                      ETA: {r.tiempo_espera_estimado_min} min —
-                      {new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}
+                      ETA: {r.tiempo_espera_estimado_min} min —&nbsp;
+                      {new Date(r.fecha_hora_reserva).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
                 </div>
@@ -237,7 +235,9 @@ export default function PanelOperador({ onLogout }) {
               </div>
             ))}
             {reservas.length === 0 && !loadingCola && (
-              <p className="p-8 text-center text-gray-400">No hay reservas activas para {asignacion.nombre_evento} hoy</p>
+              <p className="p-8 text-center text-gray-400">
+                No hay reservas activas para <strong>{asignacion.nombre_evento}</strong> hoy
+              </p>
             )}
           </div>
         </div>
