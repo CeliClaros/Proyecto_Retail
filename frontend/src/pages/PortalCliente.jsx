@@ -56,14 +56,16 @@ export default function PortalCliente({ onLogout }) {
     setLoadingReserva(true)
     setErrorForm("")
     try {
-      await api.post("/reservas/", {
+      const r = await api.post("/reservas/", {
         id_usuario:      parseInt(idUsuario),
         id_tipo_evento:  parseInt(idTipoEvento),
         canal_notif:     "whatsapp",
         ubicacion_lat:   -34.6,
         ubicacion_lng:   -58.4,
       })
-      setMensaje("✅ ¡Te anotaste en la fila! Te enviaremos un WhatsApp con tu posición y tiempo estimado.")
+      const pos = r.data.posicion_en_cola || 1
+      const eta = r.data.tiempo_espera_estimado_min || 0
+      setMensaje(`✅ ¡Te anotaste en la fila! Estás en la posición #${pos}. Tu tiempo de espera estimado es de ${eta} minutos. Te avisamos por WhatsApp cuando tengas que salir.`)
       setMostrarForm(false)
       cargarReservas()
     } catch (e) {

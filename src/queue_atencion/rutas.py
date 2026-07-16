@@ -41,7 +41,20 @@ def listar_reservas(db: Session = Depends(get_db)):
 
 @rutas_atencion.post("/", response_model=ReservaRespuesta, status_code=201)
 def crear_reserva(reserva: ReservaCrear, db: Session = Depends(get_db)):
+    import os
+    ahora = datetime.utcnow()
+    # Ajuste a hora local Argentina (UTC-3)
+    hora_local = ahora.hour - 3
+    dia_semana = ahora.weekday()  # 0=lunes, 6=domingo
+    horario_inicio = int(os.getenv("HORARIO_INICIO", 9))
+    horario_fin    = int(os.getenv("HORARIO_FIN", 18))
+    if dia_semana >= 5:
+        raise HTTPException(status_code=400, detail="El servicio no está disponible los fines de semana")
+    if hora_local < horario_inicio or hora_local >= horario_fin:
+        raise HTTPException(status_code=400, detail=f"El servicio está disponible de lunes a viernes de {horario_inicio}:00 a {horario_fin}:00hs")
     datos = reserva.model_dump()
+    # Fecha = ahora (FIFO puro)
+    datos["fecha_hora_reserva"] = ahora
     if datos.get("id_empleado_asignado"):
         datos["posicion_en_cola"] = calcular_posicion_en_cola(
             db, datos["id_empleado_asignado"], datos["fecha_hora_reserva"]
