@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react"
 import api from "../services/api"
-import { Users, Calendar, BarChart3, LogOut, Plus, RefreshCw } from "lucide-react"
+import { Users, Calendar, BarChart3, LogOut, Plus, RefreshCw, Link } from "lucide-react"
 
 export default function PanelAdmin({ onLogout }) {
-  const [seccion, setSeccion] = useState("dashboard")
-  const [empleados, setEmpleados] = useState([])
+  const [seccion, setSeccion]         = useState("dashboard")
+  const [empleados, setEmpleados]     = useState([])
   const [tipoEventos, setTipoEventos] = useState([])
-  const [reservas, setReservas] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [reservas, setReservas]       = useState([])
+  const [asignaciones, setAsignaciones] = useState([])
+  const [loading, setLoading]         = useState(false)
+  const [mensaje, setMensaje]         = useState("")
+
+  // Form nueva asignación
+  const [formEmp, setFormEmp]       = useState("")
+  const [formTipo, setFormTipo]     = useState("")
+  const [formInicio, setFormInicio] = useState("08:00")
+  const [formFin, setFormFin]       = useState("17:00")
+  const [loadingForm, setLoadingForm] = useState(false)
+
   const nombre = localStorage.getItem("nombre")
 
   useEffect(() => { cargarDatos() }, [seccion])
@@ -27,10 +37,57 @@ export default function PanelAdmin({ onLogout }) {
         const t = await api.get("/tipo-eventos/")
         setTipoEventos(t.data)
       }
+      if (seccion === "asignaciones") {
+        const [e, t, a] = await Promise.all([
+          api.get("/empleados/"),
+          api.get("/tipo-eventos/"),
+          api.get("/asignaciones/"),
+        ])
+        setEmpleados(e.data)
+        setTipoEventos(t.data)
+        setAsignaciones(a.data)
+        if (e.data.length > 0) setFormEmp(e.data[0].id)
+        if (t.data.length > 0) setFormTipo(t.data[0].id)
+      }
     } catch (e) {
       console.error(e)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const crearAsignacion = async () => {
+    if (!formEmp || !formTipo) return
+    setLoadingForm(true)
+    setMensaje("")
+    try {
+      const hoy = new Date().toISOString().split("T")[0]
+      await api.post("/asignaciones/", {
+        id_empleado:    parseInt(formEmp),
+        id_tipo_evento: parseInt(formTipo),
+        fecha:          hoy,
+        hora_inicio:    formInicio,
+        hora_fin:       formFin,
+      })
+      const emp  = empleados.find(e => e.id === parseInt(formEmp))
+      const tipo = tipoEventos.find(t => t.id === parseInt(formTipo))
+      setMensaje(`✅ ${emp?.nombre} ${emp?.apellido} asignado a "${tipo?.nombre}" hoy de ${formInicio} a ${formFin}`)
+      cargarDatos()
+    } catch (e) {
+      const msg = e.response?.data?.detail
+      setMensaje("❌ " + (typeof msg === "string" ? msg : "Error al crear asignación"))
+    } finally {
+      setLoadingForm(false)
+    }
+  }
+
+  const darBajaAsignacion = async (id) => {
+    try {
+      await api.delete("/asignaciones/" + id)
+      setMensaje("✅ Asignación dada de baja")
+      cargarDatos()
+    } catch (e) {
+      setMensaje("❌ Error al dar de baja")
     }
   }
 
@@ -61,27 +118,23 @@ export default function PanelAdmin({ onLogout }) {
         </div>
         <nav className="flex-1 p-4 space-y-2">
           {[
-            { id: "dashboard", icon: BarChart3, label: "Dashboard" },
-            { id: "reservas",  icon: Calendar,  label: "Reservas" },
-            { id: "empleados", icon: Users,      label: "Empleados" },
-            { id: "eventos",   icon: Plus,       label: "Tipo Eventos" },
+            { id: "dashboard",   icon: BarChart3, label: "Dashboard" },
+            { id: "reservas",    icon: Calendar,  label: "Reservas" },
+            { id: "empleados",   icon: Users,     label: "Empleados" },
+            { id: "eventos",     icon: Plus,      label: "Tipo Eventos" },
+            { id: "asignaciones", icon: Link,     label: "Asignaciones" },
           ].map(item => (
-            <button
-              key={item.id}
-              onClick={() => setSeccion(item.id)}
+            <button key={item.id} onClick={() => setSeccion(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition text-left ${
                 seccion === item.id ? "bg-blue-600" : "hover:bg-blue-800"
-              }`}
-            >
+              }`}>
               <item.icon size={18} />
               {item.label}
             </button>
           ))}
         </nav>
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-3 px-6 py-4 hover:bg-blue-800 transition border-t border-blue-700"
-        >
+        <button onClick={onLogout}
+          className="flex items-center gap-3 px-6 py-4 hover:bg-blue-800 transition border-t border-blue-700">
           <LogOut size={18} /> Cerrar sesión
         </button>
       </div>
@@ -96,6 +149,12 @@ export default function PanelAdmin({ onLogout }) {
         </div>
 
         {loading && <p className="text-gray-500">Cargando...</p>}
+
+        {mensaje && (
+          <div className="mb-4 p-4 bg-white rounded-xl shadow border-l-4 border-blue-500 text-sm">
+            {mensaje}
+          </div>
+        )}
 
         {/* DASHBOARD */}
         {seccion === "dashboard" && (
@@ -237,6 +296,102 @@ export default function PanelAdmin({ onLogout }) {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* ASIGNACIONES */}
+        {seccion === "asignaciones" && (
+          <div className="space-y-6">
+
+            {/* Formulario nueva asignación */}
+            <div className="bg-white rounded-xl shadow p-6">
+              <h3 className="font-semibold text-gray-800 text-lg mb-4">Nueva asignación para hoy</h3>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Empleado</label>
+                  <select value={formEmp} onChange={e => setFormEmp(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    {empleados.filter(e => e.activo).map(e => (
+                      <option key={e.id} value={e.id}>{e.nombre} {e.apellido} — {e.legajo}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de trámite</label>
+                  <select value={formTipo} onChange={e => setFormTipo(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    {tipoEventos.filter(t => t.activo).map(t => (
+                      <option key={t.id} value={t.id}>{t.nombre} ({t.tiempo_base_min} min)</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Hora inicio</label>
+                  <input type="time" value={formInicio} onChange={e => setFormInicio(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Hora fin</label>
+                  <input type="time" value={formFin} onChange={e => setFormFin(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+              </div>
+              <button onClick={crearAsignacion} disabled={loadingForm}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition disabled:opacity-50">
+                {loadingForm ? "Asignando..." : "Crear asignación"}
+              </button>
+            </div>
+
+            {/* Lista de asignaciones activas */}
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              <div className="px-6 py-4 border-b">
+                <h3 className="font-semibold text-gray-700">Asignaciones activas hoy</h3>
+              </div>
+              {asignaciones.length === 0 ? (
+                <p className="p-8 text-center text-gray-400">No hay asignaciones activas hoy</p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50">
+                    <tr className="text-left text-gray-500">
+                      <th className="px-6 py-3">Empleado</th>
+                      <th className="px-6 py-3">Tipo de trámite</th>
+                      <th className="px-6 py-3">Horario</th>
+                      <th className="px-6 py-3">Fecha</th>
+                      <th className="px-6 py-3">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {asignaciones.map(a => {
+                      const emp  = empleados.find(e => e.id === a.id_empleado)
+                      const tipo = tipoEventos.find(t => t.id === a.id_tipo_evento)
+                      return (
+                        <tr key={a.id} className="border-t hover:bg-gray-50">
+                          <td className="px-6 py-3 font-medium">
+                            {emp ? `${emp.nombre} ${emp.apellido}` : `Empleado #${a.id_empleado}`}
+                            <span className="ml-2 text-xs text-gray-400">{emp?.legajo}</span>
+                          </td>
+                          <td className="px-6 py-3">
+                            <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                              {tipo ? tipo.nombre : `Evento #${a.id_tipo_evento}`}
+                            </span>
+                          </td>
+                          <td className="px-6 py-3 text-gray-500">{a.hora_inicio} — {a.hora_fin}</td>
+                          <td className="px-6 py-3 text-gray-500">
+                            {new Date(a.fecha).toLocaleDateString("es-AR")}
+                          </td>
+                          <td className="px-6 py-3">
+                            <button onClick={() => darBajaAsignacion(a.id)}
+                              className="text-red-500 hover:text-red-700 text-xs font-medium">
+                              Dar de baja
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         )}
       </div>
