@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from datetime import datetime, date
 from typing import List
 from src.config.base_datos import get_db
-from src.config.modelos_db import Reserva, EstadoReservaEnum, HistorialAtencion
+from src.config.modelos_db import Reserva, EstadoReservaEnum, HistorialAtencion, Usuario, TipoEvento
+from src.notificaciones.envio import enviar_confirmacion_con_ruta
 from src.queue_atencion.modelo import ReservaCrear, ReservaRespuesta
 from src.queue_atencion.logica import (
     calcular_tiempo_espera,
@@ -66,6 +67,26 @@ def crear_reserva(reserva: ReservaCrear, db: Session = Depends(get_db)):
     db.add(db_reserva)
     db.commit()
     db.refresh(db_reserva)
+
+    # Notificación WhatsApp — best effort (no interrumpe si falla)
+    try:
+        usuario = db.query(Usuario).filter(Usuario.id == db_reserva.id_usuario).first()
+        tipo    = db.query(TipoEvento).filter(TipoEvento.id == db_reserva.id_tipo_evento).first()
+        if usuario and usuario.telefono and tipo:
+            enviar_confirmacion_con_ruta(
+                telefono         = usuario.telefono,
+                nombre           = usuario.nombre,
+                servicio         = tipo.nombre,
+                tiempo_espera_min= db_reserva.tiempo_espera_estimado_min,
+                posicion_cola    = db_reserva.posicion_en_cola or 1,
+                usuario_lat      = float(db_reserva.ubicacion_lat or -34.6),
+                usuario_lng      = float(db_reserva.ubicacion_lng or -58.4),
+                local_lat        = float(db_reserva.ubicacion_lat or -34.6),
+                local_lng        = float(db_reserva.ubicacion_lng or -58.4),
+            )
+    except Exception as e:
+        print(f"[WHATSAPP] No se pudo enviar notificacion: {e}")
+
     return db_reserva
 
 @rutas_atencion.get("/{reserva_id}", response_model=ReservaRespuesta)
