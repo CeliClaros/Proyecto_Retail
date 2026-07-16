@@ -70,8 +70,8 @@ export default function PortalCliente({ onLogout }) {
       cargarReservas()
     } catch (e) {
       const msg = e.response?.data?.detail
-      if (typeof msg === "string") setErrorForm(msg)
-      else setErrorForm("Error al anotarse. Intentá de nuevo.")
+      if (typeof msg === "string") setErrorForm("⚠️ " + msg)
+      else setErrorForm("No se pudo crear la reserva. Intentá de nuevo.")
     } finally {
       setLoadingReserva(false)
     }
@@ -148,7 +148,7 @@ export default function PortalCliente({ onLogout }) {
           </div>
           <button onClick={() => { setMostrarForm(!mostrarForm); setErrorForm("") }}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-medium transition">
-            {mostrarForm ? <><X size={16}/> Cancelar</> : <><Plus size={16}/> Anotarme en la fila</>}
+            {mostrarForm ? <><X size={16}/> Cancelar</> : <><Plus size={16}/> Reservar turno</>}
           </button>
         </div>
 
@@ -162,7 +162,7 @@ export default function PortalCliente({ onLogout }) {
         {/* Formulario anotarse en la fila */}
         {mostrarForm && (
           <div className="bg-white rounded-2xl shadow-md border border-blue-100 p-6 mb-6">
-            <h3 className="font-semibold text-gray-800 text-lg mb-1">Anotarme en la fila</h3>
+            <h3 className="font-semibold text-gray-800 text-lg mb-1">Reservar turno</h3>
             <p className="text-sm text-gray-500 mb-4">Te anotás ahora y el sistema te avisa cuándo salir para llegar justo a tu turno.</p>
 
             <div className="space-y-4">
@@ -203,7 +203,7 @@ export default function PortalCliente({ onLogout }) {
 
               <button onClick={anotarseEnFila} disabled={loadingReserva}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
-                {loadingReserva ? "Anotándote..." : <><Plus size={18}/> Anotarme ahora</>}
+                {loadingReserva ? "Reservando..." : <><Plus size={18}/> Reservar ahora</>}
               </button>
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function PortalCliente({ onLogout }) {
             <p className="text-gray-500 mb-4">No tenés reservas todavía</p>
             <button onClick={() => setMostrarForm(true)}
               className="flex items-center gap-2 mx-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-medium transition">
-              <Plus size={16}/> Anotarme en la fila
+              <Plus size={16}/> Reservar turno
             </button>
           </div>
         )}
