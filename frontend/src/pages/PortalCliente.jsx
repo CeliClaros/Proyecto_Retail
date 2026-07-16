@@ -1,30 +1,80 @@
 import { useState, useEffect } from "react"
 import api from "../services/api"
-import { LogOut, RefreshCw, Clock, MapPin, XCircle, CheckCircle, ArrowDown } from "lucide-react"
+import { LogOut, RefreshCw, Clock, MapPin, XCircle, CheckCircle, ArrowDown, Plus, X } from "lucide-react"
 
 function getMapsUrl(lat, lng) {
   return "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng
 }
 
 export default function PortalCliente({ onLogout }) {
-  const [reservas, setReservas]   = useState([])
-  const [loading, setLoading]     = useState(false)
-  const [pagina, setPagina]       = useState(1)
-  const [mensaje, setMensaje]     = useState("")
-  const nombre = localStorage.getItem("nombre")
+  const [reservas, setReservas]       = useState([])
+  const [tipoEventos, setTipoEventos] = useState([])
+  const [loading, setLoading]         = useState(false)
+  const [pagina, setPagina]           = useState(1)
+  const [mensaje, setMensaje]         = useState("")
+  const [mostrarForm, setMostrarForm] = useState(false)
+  const [loadingReserva, setLoadingReserva] = useState(false)
+
+  // Form nueva reserva
+  const [idTipoEvento, setIdTipoEvento] = useState("")
+  const [fechaHora, setFechaHora]       = useState("")
+  const [errorForm, setErrorForm]       = useState("")
+
+  const nombre    = localStorage.getItem("nombre")
+  const idUsuario = localStorage.getItem("id")
   const POR_PAGINA = 5
 
-  useEffect(() => { cargarReservas() }, [])
+  useEffect(() => {
+    cargarReservas()
+    cargarTipoEventos()
+  }, [])
 
   const cargarReservas = async () => {
     setLoading(true)
     try {
-      const r = await api.get("/reservas/mis-reservas/" + localStorage.getItem("id"))
+      const r = await api.get("/reservas/mis-reservas/" + idUsuario)
       setReservas(r.data)
     } catch (e) {
       console.error(e)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const cargarTipoEventos = async () => {
+    try {
+      const r = await api.get("/tipo-eventos/")
+      setTipoEventos(r.data)
+      if (r.data.length > 0) setIdTipoEvento(r.data[0].id)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const crearReserva = async () => {
+    if (!idTipoEvento || !fechaHora) {
+      setErrorForm("Completá todos los campos")
+      return
+    }
+    setLoadingReserva(true)
+    setErrorForm("")
+    try {
+      await api.post("/reservas/", {
+        id_usuario:           parseInt(idUsuario),
+        id_tipo_evento:       parseInt(idTipoEvento),
+        fecha_hora_reserva:   fechaHora,
+        canal_notif:          "whatsapp",
+        ubicacion_lat:        -34.6,
+        ubicacion_lng:        -58.4,
+      })
+      setMensaje("✅ Reserva creada. Te enviaremos un WhatsApp con los detalles.")
+      setMostrarForm(false)
+      setFechaHora("")
+      cargarReservas()
+    } catch (e) {
+      setErrorForm("Error al crear la reserva. Intentá de nuevo.")
+    } finally {
+      setLoadingReserva(false)
     }
   }
 
@@ -55,7 +105,6 @@ export default function PortalCliente({ onLogout }) {
     EN_CURSO:   "bg-orange-100 text-orange-800",
     ATENDIDA:   "bg-green-100 text-green-800",
     CANCELADA:  "bg-red-100 text-red-800",
-    AUSENTE:    "bg-gray-100 text-gray-600",
   }
 
   const estadoIcono = {
@@ -65,50 +114,112 @@ export default function PortalCliente({ onLogout }) {
     EN_CURSO:   "🔄",
     ATENDIDA:   "🎉",
     CANCELADA:  "❌",
-    AUSENTE:    "😔",
   }
 
-  const totalPaginas = Math.ceil(reservas.length / POR_PAGINA)
+  // Fecha mínima = ahora
+  const fechaMin = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+    .toISOString().slice(0, 16)
+
+  const totalPaginas   = Math.ceil(reservas.length / POR_PAGINA)
   const reservasPagina = reservas.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA)
+
+  const tipoSeleccionado = tipoEventos.find(t => t.id === parseInt(idTipoEvento))
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+      {/* Header */}
       <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
         <div>
           <h1 className="text-xl font-bold text-blue-800">RetailQueue Pro</h1>
           <p className="text-gray-500 text-sm">Hola, {nombre}!</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={cargarReservas} className="flex items-center gap-2 text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-50">
+          <button onClick={cargarReservas}
+            className="flex items-center gap-2 text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-50">
             <RefreshCw size={16} /> Actualizar
           </button>
-          <button onClick={onLogout} className="flex items-center gap-2 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-100">
+          <button onClick={onLogout}
+            className="flex items-center gap-2 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-100">
             <LogOut size={16} /> Salir
           </button>
         </div>
       </div>
 
       <div className="max-w-2xl mx-auto p-6">
+        {/* Título + botón nueva reserva */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Mis Reservas</h2>
-          <span className="text-sm text-gray-500">{reservas.length} total</span>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">Mis Reservas</h2>
+            <p className="text-sm text-gray-500">{reservas.length} total</p>
+          </div>
+          <button onClick={() => { setMostrarForm(!mostrarForm); setErrorForm("") }}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-medium transition">
+            {mostrarForm ? <><X size={16}/> Cancelar</> : <><Plus size={16}/> Nueva reserva</>}
+          </button>
         </div>
 
+        {/* Mensaje feedback */}
         {mensaje && (
           <div className="mb-4 p-4 bg-white rounded-xl shadow border-l-4 border-blue-500 text-sm">
             {mensaje}
           </div>
         )}
 
-        {loading && <div className="text-center py-12 text-gray-400">Cargando...</div>}
+        {/* Formulario nueva reserva */}
+        {mostrarForm && (
+          <div className="bg-white rounded-2xl shadow-md border border-blue-100 p-6 mb-6">
+            <h3 className="font-semibold text-gray-800 text-lg mb-4">Nueva Reserva</h3>
 
-        {reservas.length === 0 && !loading && (
-          <div className="text-center py-12 bg-white rounded-2xl shadow">
-            <p className="text-4xl mb-4">📋</p>
-            <p className="text-gray-500">No tenés reservas todavía</p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de trámite</label>
+                <select value={idTipoEvento} onChange={e => setIdTipoEvento(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  {tipoEventos.map(te => (
+                    <option key={te.id} value={te.id}>{te.nombre}</option>
+                  ))}
+                </select>
+                {tipoSeleccionado && (
+                  <div className="mt-2 p-3 bg-blue-50 rounded-lg text-sm text-blue-700">
+                    <p>⏱ Duración estimada: <strong>{tipoSeleccionado.tiempo_base_min} minutos</strong></p>
+                    {tipoSeleccionado.requisitos && (
+                      <p className="mt-1">📋 Requisitos: <strong>{tipoSeleccionado.requisitos}</strong></p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha y hora</label>
+                <input type="datetime-local" value={fechaHora} min={fechaMin}
+                  onChange={e => setFechaHora(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              {errorForm && <p className="text-red-500 text-sm">{errorForm}</p>}
+
+              <button onClick={crearReserva} disabled={loadingReserva}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition disabled:opacity-50">
+                {loadingReserva ? "Creando reserva..." : "Confirmar reserva"}
+              </button>
+            </div>
           </div>
         )}
 
+        {loading && <div className="text-center py-12 text-gray-400">Cargando...</div>}
+
+        {reservas.length === 0 && !loading && !mostrarForm && (
+          <div className="text-center py-12 bg-white rounded-2xl shadow">
+            <p className="text-4xl mb-4">📋</p>
+            <p className="text-gray-500 mb-4">No tenés reservas todavía</p>
+            <button onClick={() => setMostrarForm(true)}
+              className="flex items-center gap-2 mx-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-medium transition">
+              <Plus size={16}/> Crear mi primera reserva
+            </button>
+          </div>
+        )}
+
+        {/* Lista de reservas */}
         <div className="space-y-4">
           {reservasPagina.map(r => (
             <div key={r.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -133,7 +244,7 @@ export default function PortalCliente({ onLogout }) {
                     <span className="font-medium">Tiempo de espera estimado</span>
                   </div>
                   <p className="text-3xl font-bold text-blue-800">{r.tiempo_espera_estimado_min} min</p>
-                  <p className="text-blue-600 text-sm mt-1">Posicion en fila: #{r.posicion_en_cola}</p>
+                  <p className="text-blue-600 text-sm mt-1">Posición en fila: #{r.posicion_en_cola}</p>
                 </div>
               )}
 
@@ -141,8 +252,8 @@ export default function PortalCliente({ onLogout }) {
                 <div className="bg-green-50 rounded-xl p-4 mb-4 flex items-center gap-3">
                   <CheckCircle className="text-green-500" size={24} />
                   <div>
-                    <p className="font-medium text-green-700">Atencion completada</p>
-                    <p className="text-green-600 text-sm">Duracion: {r.duracion_real_min} minutos</p>
+                    <p className="font-medium text-green-700">Atención completada</p>
+                    <p className="text-green-600 text-sm">Duración: {r.duracion_real_min} minutos</p>
                   </div>
                 </div>
               )}
@@ -178,9 +289,7 @@ export default function PortalCliente({ onLogout }) {
               className="px-4 py-2 bg-white rounded-lg shadow text-sm disabled:opacity-40 hover:bg-gray-50">
               ← Anterior
             </button>
-            <span className="text-sm text-gray-600">
-              Página {pagina} de {totalPaginas}
-            </span>
+            <span className="text-sm text-gray-600">Página {pagina} de {totalPaginas}</span>
             <button onClick={() => setPagina(p => Math.min(totalPaginas, p+1))} disabled={pagina === totalPaginas}
               className="px-4 py-2 bg-white rounded-lg shadow text-sm disabled:opacity-40 hover:bg-gray-50">
               Siguiente →
