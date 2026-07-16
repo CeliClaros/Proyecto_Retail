@@ -14,11 +14,8 @@ export default function PortalCliente({ onLogout }) {
   const [mensaje, setMensaje]         = useState("")
   const [mostrarForm, setMostrarForm] = useState(false)
   const [loadingReserva, setLoadingReserva] = useState(false)
-
-  // Form nueva reserva
-  const [idTipoEvento, setIdTipoEvento] = useState("")
-  const [fechaHora, setFechaHora]       = useState("")
-  const [errorForm, setErrorForm]       = useState("")
+  const [idTipoEvento, setIdTipoEvento]     = useState("")
+  const [errorForm, setErrorForm]           = useState("")
 
   const nombre    = localStorage.getItem("nombre")
   const idUsuario = localStorage.getItem("id")
@@ -51,28 +48,28 @@ export default function PortalCliente({ onLogout }) {
     }
   }
 
-  const crearReserva = async () => {
-    if (!idTipoEvento || !fechaHora) {
-      setErrorForm("Completá todos los campos")
+  const anotarseEnFila = async () => {
+    if (!idTipoEvento) {
+      setErrorForm("Seleccioná un tipo de trámite")
       return
     }
     setLoadingReserva(true)
     setErrorForm("")
     try {
       await api.post("/reservas/", {
-        id_usuario:           parseInt(idUsuario),
-        id_tipo_evento:       parseInt(idTipoEvento),
-        fecha_hora_reserva:   fechaHora,
-        canal_notif:          "whatsapp",
-        ubicacion_lat:        -34.6,
-        ubicacion_lng:        -58.4,
+        id_usuario:      parseInt(idUsuario),
+        id_tipo_evento:  parseInt(idTipoEvento),
+        canal_notif:     "whatsapp",
+        ubicacion_lat:   -34.6,
+        ubicacion_lng:   -58.4,
       })
-      setMensaje("✅ Reserva creada. Te enviaremos un WhatsApp con los detalles.")
+      setMensaje("✅ ¡Te anotaste en la fila! Te enviaremos un WhatsApp con tu posición y tiempo estimado.")
       setMostrarForm(false)
-      setFechaHora("")
       cargarReservas()
     } catch (e) {
-      setErrorForm("Error al crear la reserva. Intentá de nuevo.")
+      const msg = e.response?.data?.detail
+      if (typeof msg === "string") setErrorForm(msg)
+      else setErrorForm("Error al anotarse. Intentá de nuevo.")
     } finally {
       setLoadingReserva(false)
     }
@@ -91,7 +88,7 @@ export default function PortalCliente({ onLogout }) {
   const moverAlFinal = async (id) => {
     try {
       await api.patch("/reservas/" + id + "/mover-al-final")
-      setMensaje("✅ Movido al final de la cola. Tu ETA fue actualizado.")
+      setMensaje("✅ Te movimos al final de la cola. Tu tiempo de espera fue actualizado.")
       cargarReservas()
     } catch (e) {
       setMensaje("❌ Error al mover la reserva")
@@ -116,13 +113,8 @@ export default function PortalCliente({ onLogout }) {
     CANCELADA:  "❌",
   }
 
-  // Fecha mínima = ahora
-  const fechaMin = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-    .toISOString().slice(0, 16)
-
   const totalPaginas   = Math.ceil(reservas.length / POR_PAGINA)
   const reservasPagina = reservas.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA)
-
   const tipoSeleccionado = tipoEventos.find(t => t.id === parseInt(idTipoEvento))
 
   return (
@@ -146,7 +138,7 @@ export default function PortalCliente({ onLogout }) {
       </div>
 
       <div className="max-w-2xl mx-auto p-6">
-        {/* Título + botón nueva reserva */}
+        {/* Título + botón anotarse */}
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-800">Mis Reservas</h2>
@@ -154,7 +146,7 @@ export default function PortalCliente({ onLogout }) {
           </div>
           <button onClick={() => { setMostrarForm(!mostrarForm); setErrorForm("") }}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-medium transition">
-            {mostrarForm ? <><X size={16}/> Cancelar</> : <><Plus size={16}/> Nueva reserva</>}
+            {mostrarForm ? <><X size={16}/> Cancelar</> : <><Plus size={16}/> Anotarme en la fila</>}
           </button>
         </div>
 
@@ -165,42 +157,51 @@ export default function PortalCliente({ onLogout }) {
           </div>
         )}
 
-        {/* Formulario nueva reserva */}
+        {/* Formulario anotarse en la fila */}
         {mostrarForm && (
           <div className="bg-white rounded-2xl shadow-md border border-blue-100 p-6 mb-6">
-            <h3 className="font-semibold text-gray-800 text-lg mb-4">Nueva Reserva</h3>
+            <h3 className="font-semibold text-gray-800 text-lg mb-1">Anotarme en la fila</h3>
+            <p className="text-sm text-gray-500 mb-4">Te anotás ahora y el sistema te avisa cuándo salir para llegar justo a tu turno.</p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de trámite</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">¿Qué trámite necesitás?</label>
                 <select value={idTipoEvento} onChange={e => setIdTipoEvento(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                   {tipoEventos.map(te => (
                     <option key={te.id} value={te.id}>{te.nombre}</option>
                   ))}
                 </select>
+
                 {tipoSeleccionado && (
-                  <div className="mt-2 p-3 bg-blue-50 rounded-lg text-sm text-blue-700">
-                    <p>⏱ Duración estimada: <strong>{tipoSeleccionado.tiempo_base_min} minutos</strong></p>
+                  <div className="mt-3 p-4 bg-blue-50 rounded-xl text-sm">
+                    <div className="flex items-center gap-2 text-blue-700 mb-1">
+                      <Clock size={14} />
+                      <span className="font-medium">Duración estimada: {tipoSeleccionado.tiempo_base_min} minutos</span>
+                    </div>
                     {tipoSeleccionado.requisitos && (
-                      <p className="mt-1">📋 Requisitos: <strong>{tipoSeleccionado.requisitos}</strong></p>
+                      <p className="text-blue-600">📋 Requisitos: <strong>{tipoSeleccionado.requisitos}</strong></p>
+                    )}
+                    {tipoSeleccionado.descripcion && (
+                      <p className="text-blue-500 mt-1 text-xs">{tipoSeleccionado.descripcion}</p>
                     )}
                   </div>
                 )}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha y hora</label>
-                <input type="datetime-local" value={fechaHora} min={fechaMin}
-                  onChange={e => setFechaHora(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-sm text-yellow-700">
+                ⏰ Horario de atención: <strong>Lunes a Viernes de 9:00 a 18:00hs</strong>
               </div>
 
-              {errorForm && <p className="text-red-500 text-sm">{errorForm}</p>}
+              {errorForm && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                  {errorForm}
+                </div>
+              )}
 
-              <button onClick={crearReserva} disabled={loadingReserva}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition disabled:opacity-50">
-                {loadingReserva ? "Creando reserva..." : "Confirmar reserva"}
+              <button onClick={anotarseEnFila} disabled={loadingReserva}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
+                {loadingReserva ? "Anotándote..." : <><Plus size={18}/> Anotarme ahora</>}
               </button>
             </div>
           </div>
@@ -214,7 +215,7 @@ export default function PortalCliente({ onLogout }) {
             <p className="text-gray-500 mb-4">No tenés reservas todavía</p>
             <button onClick={() => setMostrarForm(true)}
               className="flex items-center gap-2 mx-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-medium transition">
-              <Plus size={16}/> Crear mi primera reserva
+              <Plus size={16}/> Anotarme en la fila
             </button>
           </div>
         )}
@@ -262,7 +263,7 @@ export default function PortalCliente({ onLogout }) {
                 {r.ubicacion_lat && r.ubicacion_lng && ["PENDIENTE","CONFIRMADA","EN_ESPERA","EN_CURSO"].includes(r.estado) && (
                   <a href={getMapsUrl(r.ubicacion_lat, r.ubicacion_lng)} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
-                    <MapPin size={14} /> Ver ruta
+                    <MapPin size={14} /> Ver ruta al local
                   </a>
                 )}
                 {["PENDIENTE","CONFIRMADA","EN_ESPERA"].includes(r.estado) && (
