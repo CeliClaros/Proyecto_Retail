@@ -15,7 +15,7 @@ class ReservaCrear(BaseModel):
     id_usuario:            int
     id_tipo_evento:        int
     id_empleado_asignado:  Optional[int] = None
-    fecha_hora_reserva:    datetime
+    fecha_hora_reserva:    Optional[datetime] = None
     canal_notif:           Optional[str] = "whatsapp"
     ubicacion_lat:         Optional[float] = None
     ubicacion_lng:         Optional[float] = None
