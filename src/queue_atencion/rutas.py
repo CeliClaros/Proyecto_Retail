@@ -43,12 +43,12 @@ def listar_reservas(db: Session = Depends(get_db)):
 @rutas_atencion.post("/", response_model=ReservaRespuesta, status_code=201)
 def crear_reserva(reserva: ReservaCrear, db: Session = Depends(get_db)):
     import os
-    ahora = datetime.utcnow()
-    # Ajuste a hora local Argentina (UTC-3)
-    hora_local = ahora.hour - 3
-    dia_semana = ahora.weekday()  # 0=lunes, 6=domingo
+    from zoneinfo import ZoneInfo
+    ahora_ba = datetime.now(ZoneInfo("America/Argentina/Buenos_Aires"))
+    hora_local = ahora_ba.hour
+    dia_semana = ahora_ba.weekday()  # 0=lunes, 6=domingo
     horario_inicio = int(os.getenv("HORARIO_INICIO", 9))
-    horario_fin    = int(os.getenv("HORARIO_FIN", 18))
+    horario_fin    = int(os.getenv("HORARIO_FIN", 23))
     if dia_semana >= 5:
         raise HTTPException(status_code=400, detail="El servicio no está disponible los fines de semana")
     if hora_local < horario_inicio or hora_local >= horario_fin:
