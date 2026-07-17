@@ -224,7 +224,7 @@ export default function PortalCliente({ onLogout }) {
                     )}
                   </div>
                   <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-sm text-yellow-700">
-                    ⏰ Horario de atención: <strong>Lunes a Viernes de 9:00 a 21:00hs</strong>
+                    ⏰ Horario de atención: <strong>Lunes a Viernes de 9:00 a 23:00hs</strong>
                   </div>
                   {errorForm && (
                     <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
