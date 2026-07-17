@@ -1,21 +1,25 @@
 import { useState, useEffect } from "react"
 import api from "../services/api"
-import { LogOut, RefreshCw, Clock, MapPin, XCircle, CheckCircle, ArrowDown, Plus, X } from "lucide-react"
+import { LogOut, RefreshCw, Clock, MapPin, XCircle, CheckCircle, ArrowDown, Plus, X, History } from "lucide-react"
 
 function getMapsUrl(lat, lng) {
   return "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng
 }
 
+const ESTADOS_ACTIVOS   = ["PENDIENTE","CONFIRMADA","EN_ESPERA","EN_CURSO"]
+const ESTADOS_HISTORICO = ["ATENDIDA","CANCELADA"]
+
 export default function PortalCliente({ onLogout }) {
-  const [reservas, setReservas]       = useState([])
-  const [tipoEventos, setTipoEventos] = useState([])
-  const [loading, setLoading]         = useState(false)
-  const [pagina, setPagina]           = useState(1)
-  const [mensaje, setMensaje]         = useState("")
-  const [mostrarForm, setMostrarForm] = useState(false)
+  const [reservas, setReservas]             = useState([])
+  const [tipoEventos, setTipoEventos]       = useState([])
+  const [loading, setLoading]               = useState(false)
+  const [tab, setTab]                       = useState("activos") // "activos" | "historial"
+  const [mensaje, setMensaje]               = useState("")
+  const [mostrarForm, setMostrarForm]       = useState(false)
   const [loadingReserva, setLoadingReserva] = useState(false)
   const [idTipoEvento, setIdTipoEvento]     = useState("")
   const [errorForm, setErrorForm]           = useState("")
+  const [paginaHistorial, setPaginaHistorial] = useState(1)
 
   const nombre    = localStorage.getItem("nombre")
   const idUsuario = localStorage.getItem("id")
@@ -65,8 +69,9 @@ export default function PortalCliente({ onLogout }) {
       })
       const pos = r.data.posicion_en_cola || 1
       const eta = r.data.tiempo_espera_estimado_min || 0
-      setMensaje(`✅ ¡Te anotaste en la fila! Estás en la posición #${pos}. Tu tiempo de espera estimado es de ${eta} minutos. Te avisamos por WhatsApp cuando tengas que salir.`)
+      setMensaje(`✅ ¡Reserva confirmada! Estás en la posición #${pos}. Tiempo de espera estimado: ${eta} minutos. Te avisamos por WhatsApp cuando tengas que salir.`)
       setMostrarForm(false)
+      setTab("activos")
       cargarReservas()
     } catch (e) {
       const msg = e.response?.data?.detail
@@ -115,9 +120,12 @@ export default function PortalCliente({ onLogout }) {
     CANCELADA:  "❌",
   }
 
-  const totalPaginas   = Math.ceil(reservas.length / POR_PAGINA)
-  const reservasPagina = reservas.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA)
-  const tipoSeleccionado = tipoEventos.find(t => t.id === parseInt(idTipoEvento))
+  const reservasActivas   = reservas.filter(r => ESTADOS_ACTIVOS.includes(r.estado))
+  const reservasHistorial = reservas.filter(r => ESTADOS_HISTORICO.includes(r.estado))
+  const tipoSeleccionado  = tipoEventos.find(t => t.id === parseInt(idTipoEvento))
+
+  const totalPaginasHistorial = Math.ceil(reservasHistorial.length / POR_PAGINA)
+  const historialPagina = reservasHistorial.slice((paginaHistorial-1)*POR_PAGINA, paginaHistorial*POR_PAGINA)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
@@ -140,17 +148,6 @@ export default function PortalCliente({ onLogout }) {
       </div>
 
       <div className="max-w-2xl mx-auto p-6">
-        {/* Título + botón anotarse */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800">Mis Reservas</h2>
-            <p className="text-sm text-gray-500">{reservas.length} total</p>
-          </div>
-          <button onClick={() => { setMostrarForm(!mostrarForm); setErrorForm("") }}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-medium transition">
-            {mostrarForm ? <><X size={16}/> Cancelar</> : <><Plus size={16}/> Reservar turno</>}
-          </button>
-        </div>
 
         {/* Mensaje feedback */}
         {mensaje && (
@@ -159,144 +156,205 @@ export default function PortalCliente({ onLogout }) {
           </div>
         )}
 
-        {/* Formulario anotarse en la fila */}
-        {mostrarForm && (
-          <div className="bg-white rounded-2xl shadow-md border border-blue-100 p-6 mb-6">
-            <h3 className="font-semibold text-gray-800 text-lg mb-1">Reservar turno</h3>
-            <p className="text-sm text-gray-500 mb-4">Te anotás ahora y el sistema te avisa cuándo salir para llegar justo a tu turno.</p>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">¿Qué trámite necesitás?</label>
-                <select value={idTipoEvento} onChange={e => setIdTipoEvento(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  {tipoEventos.map(te => (
-                    <option key={te.id} value={te.id}>{te.nombre}</option>
-                  ))}
-                </select>
-
-                {tipoSeleccionado && (
-                  <div className="mt-3 p-4 bg-blue-50 rounded-xl text-sm">
-                    <div className="flex items-center gap-2 text-blue-700 mb-1">
-                      <Clock size={14} />
-                      <span className="font-medium">Duración estimada: {tipoSeleccionado.tiempo_base_min} minutos</span>
-                    </div>
-                    {tipoSeleccionado.requisitos && (
-                      <p className="text-blue-600">📋 Requisitos: <strong>{tipoSeleccionado.requisitos}</strong></p>
-                    )}
-                    {tipoSeleccionado.descripcion && (
-                      <p className="text-blue-500 mt-1 text-xs">{tipoSeleccionado.descripcion}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-sm text-yellow-700">
-                ⏰ Horario de atención: <strong>Lunes a Viernes de 9:00 a 21:00hs</strong>
-              </div>
-
-              {errorForm && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-                  {errorForm}
-                </div>
-              )}
-
-              <button onClick={anotarseEnFila} disabled={loadingReserva}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
-                {loadingReserva ? "Reservando..." : <><Plus size={18}/> Reservar ahora</>}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {loading && <div className="text-center py-12 text-gray-400">Cargando...</div>}
-
-        {reservas.length === 0 && !loading && !mostrarForm && (
-          <div className="text-center py-12 bg-white rounded-2xl shadow">
-            <p className="text-4xl mb-4">📋</p>
-            <p className="text-gray-500 mb-4">No tenés reservas todavía</p>
-            <button onClick={() => setMostrarForm(true)}
-              className="flex items-center gap-2 mx-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-medium transition">
-              <Plus size={16}/> Reservar turno
-            </button>
-          </div>
-        )}
-
-        {/* Lista de reservas */}
-        <div className="space-y-4">
-          {reservasPagina.map(r => (
-            <div key={r.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">
-                    {estadoIcono[r.estado]} Reserva #{r.id}
-                  </p>
-                  <p className="text-gray-500 text-sm mt-1">
-                    {new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}
-                  </p>
-                </div>
-                <span className={"px-3 py-1 rounded-full text-sm font-medium " + (estadoColor[r.estado] || "")}>
-                  {r.estado}
-                </span>
-              </div>
-
-              {["PENDIENTE","CONFIRMADA","EN_ESPERA"].includes(r.estado) && (
-                <div className="bg-blue-50 rounded-xl p-4 mb-4">
-                  <div className="flex items-center gap-2 text-blue-700 mb-2">
-                    <Clock size={16} />
-                    <span className="font-medium">Tiempo de espera estimado</span>
-                  </div>
-                  <p className="text-3xl font-bold text-blue-800">{r.tiempo_espera_estimado_min} min</p>
-                  <p className="text-blue-600 text-sm mt-1">Posición en fila: #{r.posicion_en_cola}</p>
-                </div>
-              )}
-
-              {r.estado === "ATENDIDA" && (
-                <div className="bg-green-50 rounded-xl p-4 mb-4 flex items-center gap-3">
-                  <CheckCircle className="text-green-500" size={24} />
-                  <div>
-                    <p className="font-medium text-green-700">Atención completada</p>
-                    <p className="text-green-600 text-sm">Duración: {r.duracion_real_min} minutos</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex gap-3 mt-2 flex-wrap">
-                {r.ubicacion_lat && r.ubicacion_lng && ["PENDIENTE","CONFIRMADA","EN_ESPERA","EN_CURSO"].includes(r.estado) && (
-                  <a href={getMapsUrl(r.ubicacion_lat, r.ubicacion_lng)} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
-                    <MapPin size={14} /> Ver ruta al local
-                  </a>
-                )}
-                {["PENDIENTE","CONFIRMADA","EN_ESPERA"].includes(r.estado) && (
-                  <>
-                    <button onClick={() => moverAlFinal(r.id)}
-                      className="flex items-center gap-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-4 py-2 rounded-lg text-sm">
-                      <ArrowDown size={14} /> No llego, moverme al final
-                    </button>
-                    <button onClick={() => cancelarReserva(r.id)}
-                      className="flex items-center gap-2 bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm">
-                      <XCircle size={14} /> Cancelar
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
+        {/* Tabs */}
+        <div className="flex rounded-xl bg-white shadow p-1 mb-6">
+          <button onClick={() => setTab("activos")}
+            className={"flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition " +
+              (tab === "activos" ? "bg-blue-600 text-white" : "text-gray-500 hover:text-gray-700")}>
+            <Clock size={15} /> Mis turnos activos
+            {reservasActivas.length > 0 && (
+              <span className={"px-2 py-0.5 rounded-full text-xs " +
+                (tab === "activos" ? "bg-white text-blue-600" : "bg-blue-100 text-blue-600")}>
+                {reservasActivas.length}
+              </span>
+            )}
+          </button>
+          <button onClick={() => setTab("historial")}
+            className={"flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition " +
+              (tab === "historial" ? "bg-blue-600 text-white" : "text-gray-500 hover:text-gray-700")}>
+            <History size={15} /> Historial
+            {reservasHistorial.length > 0 && (
+              <span className={"px-2 py-0.5 rounded-full text-xs " +
+                (tab === "historial" ? "bg-white text-blue-600" : "bg-blue-100 text-blue-600")}>
+                {reservasHistorial.length}
+              </span>
+            )}
+          </button>
         </div>
 
-        {/* Paginación */}
-        {totalPaginas > 1 && (
-          <div className="flex justify-center items-center gap-3 mt-6">
-            <button onClick={() => setPagina(p => Math.max(1, p-1))} disabled={pagina === 1}
-              className="px-4 py-2 bg-white rounded-lg shadow text-sm disabled:opacity-40 hover:bg-gray-50">
-              ← Anterior
-            </button>
-            <span className="text-sm text-gray-600">Página {pagina} de {totalPaginas}</span>
-            <button onClick={() => setPagina(p => Math.min(totalPaginas, p+1))} disabled={pagina === totalPaginas}
-              className="px-4 py-2 bg-white rounded-lg shadow text-sm disabled:opacity-40 hover:bg-gray-50">
-              Siguiente →
-            </button>
+        {/* TAB: TURNOS ACTIVOS */}
+        {tab === "activos" && (
+          <div>
+            {/* Botón reservar */}
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-sm text-gray-500">{reservasActivas.length} turno{reservasActivas.length !== 1 ? "s" : ""} activo{reservasActivas.length !== 1 ? "s" : ""}</p>
+              <button onClick={() => { setMostrarForm(!mostrarForm); setErrorForm("") }}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-medium transition text-sm">
+                {mostrarForm ? <><X size={14}/> Cancelar</> : <><Plus size={14}/> Reservar turno</>}
+              </button>
+            </div>
+
+            {/* Formulario */}
+            {mostrarForm && (
+              <div className="bg-white rounded-2xl shadow-md border border-blue-100 p-6 mb-4">
+                <h3 className="font-semibold text-gray-800 mb-1">Reservar turno</h3>
+                <p className="text-sm text-gray-500 mb-4">Te anotás ahora y el sistema te avisa cuándo salir para llegar justo a tu turno.</p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">¿Qué trámite necesitás?</label>
+                    <select value={idTipoEvento} onChange={e => setIdTipoEvento(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      {tipoEventos.map(te => (
+                        <option key={te.id} value={te.id}>{te.nombre}</option>
+                      ))}
+                    </select>
+                    {tipoSeleccionado && (
+                      <div className="mt-3 p-4 bg-blue-50 rounded-xl text-sm">
+                        <div className="flex items-center gap-2 text-blue-700 mb-1">
+                          <Clock size={14} />
+                          <span className="font-medium">Duración estimada: {tipoSeleccionado.tiempo_base_min} minutos</span>
+                        </div>
+                        {tipoSeleccionado.requisitos && (
+                          <p className="text-blue-600">📋 Requisitos: <strong>{tipoSeleccionado.requisitos}</strong></p>
+                        )}
+                        {tipoSeleccionado.descripcion && (
+                          <p className="text-blue-500 mt-1 text-xs">{tipoSeleccionado.descripcion}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-sm text-yellow-700">
+                    ⏰ Horario de atención: <strong>Lunes a Viernes de 9:00 a 21:00hs</strong>
+                  </div>
+                  {errorForm && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                      {errorForm}
+                    </div>
+                  )}
+                  <button onClick={anotarseEnFila} disabled={loadingReserva}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
+                    {loadingReserva ? "Reservando..." : <><Plus size={18}/> Reservar ahora</>}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {loading && <div className="text-center py-12 text-gray-400">Cargando...</div>}
+
+            {reservasActivas.length === 0 && !loading && !mostrarForm && (
+              <div className="text-center py-12 bg-white rounded-2xl shadow">
+                <p className="text-4xl mb-4">📋</p>
+                <p className="text-gray-500 mb-4">No tenés turnos activos</p>
+                <button onClick={() => setMostrarForm(true)}
+                  className="flex items-center gap-2 mx-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-medium transition">
+                  <Plus size={16}/> Reservar turno
+                </button>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {reservasActivas.map(r => (
+                <div key={r.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <p className="text-lg font-semibold text-gray-800">
+                        {estadoIcono[r.estado]} Reserva #{r.id}
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">
+                        {new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}
+                      </p>
+                    </div>
+                    <span className={"px-3 py-1 rounded-full text-sm font-medium " + (estadoColor[r.estado] || "")}>
+                      {r.estado}
+                    </span>
+                  </div>
+
+                  <div className="bg-blue-50 rounded-xl p-4 mb-4">
+                    <div className="flex items-center gap-2 text-blue-700 mb-2">
+                      <Clock size={16} />
+                      <span className="font-medium">Tiempo de espera estimado</span>
+                    </div>
+                    <p className="text-3xl font-bold text-blue-800">{r.tiempo_espera_estimado_min} min</p>
+                    <p className="text-blue-600 text-sm mt-1">Posición en fila: #{r.posicion_en_cola}</p>
+                  </div>
+
+                  <div className="flex gap-3 mt-2 flex-wrap">
+                    {r.ubicacion_lat && r.ubicacion_lng && (
+                      <a href={getMapsUrl(r.ubicacion_lat, r.ubicacion_lng)} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                        <MapPin size={14} /> Ver ruta al local
+                      </a>
+                    )}
+                    {["PENDIENTE","CONFIRMADA","EN_ESPERA"].includes(r.estado) && (
+                      <>
+                        <button onClick={() => moverAlFinal(r.id)}
+                          className="flex items-center gap-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-4 py-2 rounded-lg text-sm">
+                          <ArrowDown size={14} /> No llego, moverme al final
+                        </button>
+                        <button onClick={() => cancelarReserva(r.id)}
+                          className="flex items-center gap-2 bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm">
+                          <XCircle size={14} /> Cancelar
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB: HISTORIAL */}
+        {tab === "historial" && (
+          <div>
+            <p className="text-sm text-gray-500 mb-4">{reservasHistorial.length} atenciones en historial</p>
+
+            {reservasHistorial.length === 0 && !loading && (
+              <div className="text-center py-12 bg-white rounded-2xl shadow">
+                <p className="text-4xl mb-4">📚</p>
+                <p className="text-gray-500">Tu historial de atenciones aparecerá aquí</p>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {historialPagina.map(r => (
+                <div key={r.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        {estadoIcono[r.estado]} Reserva #{r.id}
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        {new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}
+                      </p>
+                    </div>
+                    <span className={"px-3 py-1 rounded-full text-sm font-medium " + (estadoColor[r.estado] || "")}>
+                      {r.estado}
+                    </span>
+                  </div>
+                  {r.estado === "ATENDIDA" && r.duracion_real_min && (
+                    <div className="mt-3 flex items-center gap-2 text-green-600 text-sm">
+                      <CheckCircle size={14} />
+                      <span>Atención completada en {r.duracion_real_min} minutos</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {totalPaginasHistorial > 1 && (
+              <div className="flex justify-center items-center gap-3 mt-6">
+                <button onClick={() => setPaginaHistorial(p => Math.max(1, p-1))} disabled={paginaHistorial===1}
+                  className="px-4 py-2 bg-white rounded-lg shadow text-sm disabled:opacity-40 hover:bg-gray-50">
+                  ← Anterior
+                </button>
+                <span className="text-sm text-gray-600">Página {paginaHistorial} de {totalPaginasHistorial}</span>
+                <button onClick={() => setPaginaHistorial(p => Math.min(totalPaginasHistorial, p+1))} disabled={paginaHistorial===totalPaginasHistorial}
+                  className="px-4 py-2 bg-white rounded-lg shadow text-sm disabled:opacity-40 hover:bg-gray-50">
+                  Siguiente →
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
