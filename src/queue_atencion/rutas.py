@@ -55,7 +55,7 @@ def crear_reserva(reserva: ReservaCrear, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=f"El servicio está disponible de lunes a viernes de {horario_inicio}:00 a {horario_fin}:00hs")
     datos = reserva.model_dump()
     # Fecha = ahora (FIFO puro)
-    datos["fecha_hora_reserva"] = ahora
+    datos["fecha_hora_reserva"] = ahora_ba.replace(tzinfo=None)
     if datos.get("id_empleado_asignado"):
         datos["posicion_en_cola"] = calcular_posicion_en_cola(
             db, datos["id_empleado_asignado"], datos["fecha_hora_reserva"]
