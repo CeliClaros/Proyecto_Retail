@@ -533,7 +533,7 @@ export default function PanelAdmin({ onLogout }) {
                   </thead>
                   <tbody>
                     {asignaciones.map(a => {
-                      const emp  = empleados.find(e => e.id === a.id_empleado)
+                      const emp  = empleados.find(e => e.id === parseInt(a.id_empleado))
                       const tipo = tipoEventos.find(t => t.id === a.id_tipo_evento)
                       return (
                         <tr key={a.id} className="border-t hover:bg-gray-50">
