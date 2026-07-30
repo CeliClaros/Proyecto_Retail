@@ -33,11 +33,12 @@ export default function PanelAdmin({ onLogout }) {
 
   // Form tipo eventos
   const [mostrarFormEvento, setMostrarFormEvento] = useState(false)
-  const [eventoNombre, setEventoNombre]     = useState("")
-  const [eventoDesc, setEventoDesc]         = useState("")
-  const [eventoTiempo, setEventoTiempo]     = useState(15)
-  const [eventoReq, setEventoReq]           = useState("")
-  const [loadingEvento, setLoadingEvento]   = useState(false)
+  const [eventoNombre, setEventoNombre]       = useState("")
+  const [eventoDesc, setEventoDesc]           = useState("")
+  const [eventoTiempo, setEventoTiempo]       = useState(15)
+  const [eventoReq, setEventoReq]             = useState("")
+  const [loadingEvento, setLoadingEvento]     = useState(false)
+  const [eventoEditando, setEventoEditando]   = useState(null)
 
   const nombre = localStorage.getItem("nombre")
 
@@ -178,6 +179,15 @@ export default function PanelAdmin({ onLogout }) {
   }
 
   // ── CRUD Tipo Eventos ───────────────────────────────────
+  const abrirEdicionEvento = (te) => {
+    setEventoEditando(te)
+    setEventoNombre(te.nombre)
+    setEventoDesc(te.descripcion || "")
+    setEventoTiempo(te.tiempo_base_min)
+    setEventoReq(te.requisitos || "")
+    setMostrarFormEvento(true)
+  }
+
   const crearEvento = async () => {
     if (!eventoNombre || !eventoTiempo) {
       setMensaje("❌ Completá nombre y tiempo base")
