@@ -115,9 +115,24 @@ export default function PanelAdmin({ onLogout }) {
     return /^\d{10,15}$/.test(tel)
   }
 
+  const validarEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  const validarNombre = (val) => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(val.trim())
+
   const guardarEmpleado = async () => {
     if (!empNombre || !empApellido || !empEmail) {
       setMensaje("❌ Completá nombre, apellido y email")
+      return
+    }
+    if (!validarNombre(empNombre)) {
+      setMensaje("❌ El nombre solo puede contener letras")
+      return
+    }
+    if (!validarNombre(empApellido)) {
+      setMensaje("❌ El apellido solo puede contener letras")
+      return
+    }
+    if (!validarEmail(empEmail)) {
+      setMensaje("❌ El email no tiene un formato válido (debe incluir @ y dominio)")
       return
     }
     if (empTelefono && !validarTelefono(empTelefono)) {
