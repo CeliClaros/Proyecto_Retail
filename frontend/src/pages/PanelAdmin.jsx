@@ -29,6 +29,7 @@ export default function PanelAdmin({ onLogout }) {
   const [empEmail, setEmpEmail]       = useState("")
   const [empTelefono, setEmpTelefono] = useState("")
   const [loadingEmp, setLoadingEmp]   = useState(false)
+  const [empEditando, setEmpEditando] = useState(null) // empleado siendo editado
 
   // Form tipo eventos
   const [mostrarFormEvento, setMostrarFormEvento] = useState(false)
@@ -95,6 +96,56 @@ export default function PanelAdmin({ onLogout }) {
     } catch (e) {
       const msg = e.response?.data?.detail
       setMensaje("❌ " + (typeof msg === "string" ? msg : "Error al crear empleado"))
+    } finally {
+      setLoadingEmp(false)
+    }
+  }
+
+  const abrirEdicionEmp = (emp) => {
+    setEmpEditando(emp)
+    setEmpNombre(emp.nombre)
+    setEmpApellido(emp.apellido)
+    setEmpEmail(emp.email)
+    setEmpTelefono(emp.telefono || "")
+    setMostrarFormEmp(true)
+  }
+
+  const validarTelefono = (tel) => {
+    if (!tel) return true // opcional
+    return /^\d{10,15}$/.test(tel)
+  }
+
+  const guardarEmpleado = async () => {
+    if (!empNombre || !empApellido || !empEmail) {
+      setMensaje("❌ Completá nombre, apellido y email")
+      return
+    }
+    if (empTelefono && !validarTelefono(empTelefono)) {
+      setMensaje("❌ El teléfono debe tener solo números (10 a 15 dígitos), sin espacios ni guiones")
+      return
+    }
+    setLoadingEmp(true)
+    try {
+      if (empEditando) {
+        await api.put(`/empleados/${empEditando.id}`, {
+          nombre: empNombre, apellido: empApellido,
+          email: empEmail, telefono: empTelefono || null, activo: true
+        })
+        setMensaje(`✅ Empleado ${empNombre} ${empApellido} actualizado`)
+      } else {
+        await api.post("/empleados/", {
+          nombre: empNombre, apellido: empApellido,
+          email: empEmail, telefono: empTelefono || null, activo: true
+        })
+        setMensaje(`✅ Empleado ${empNombre} ${empApellido} creado`)
+      }
+      setMostrarFormEmp(false)
+      setEmpEditando(null)
+      setEmpNombre(""); setEmpApellido(""); setEmpEmail(""); setEmpTelefono("")
+      cargarDatos()
+    } catch (e) {
+      const msg = e.response?.data?.detail
+      setMensaje("❌ " + (typeof msg === "string" ? msg : "Error al guardar empleado"))
     } finally {
       setLoadingEmp(false)
     }
@@ -373,7 +424,7 @@ export default function PanelAdmin({ onLogout }) {
 
             {mostrarFormEmp && (
               <div className="bg-white rounded-xl shadow p-6">
-                <h3 className="font-semibold text-gray-800 mb-4">Nuevo empleado</h3>
+                <h3 className="font-semibold text-gray-800 mb-4">{empEditando ? `Editar: ${empEditando.nombre} ${empEditando.apellido}` : "Nuevo empleado"}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-600 mb-1">Nombre *</label>
@@ -388,13 +439,15 @@ export default function PanelAdmin({ onLogout }) {
                     <input className={inputClass} type="email" value={empEmail} onChange={e => setEmpEmail(e.target.value)} placeholder="juan@empresa.com" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Teléfono</label>
-                    <input className={inputClass} value={empTelefono} onChange={e => setEmpTelefono(e.target.value)} placeholder="5491112345678" />
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Teléfono <span className="text-gray-400">(solo números, sin espacios)</span></label>
+                    <input className={inputClass} value={empTelefono}
+                      onChange={e => setEmpTelefono(e.target.value.replace(/[^0-9]/g, ""))}
+                      placeholder="5491112345678" maxLength={15} inputMode="numeric" />
                   </div>
                 </div>
-                <button onClick={crearEmpleado} disabled={loadingEmp}
+                <button onClick={guardarEmpleado} disabled={loadingEmp}
                   className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50">
-                  {loadingEmp ? "Creando..." : "Crear empleado"}
+                  {loadingEmp ? "Guardando..." : (empEditando ? "Guardar cambios" : "Crear empleado")}
                 </button>
               </div>
             )}
@@ -424,12 +477,18 @@ export default function PanelAdmin({ onLogout }) {
                         </span>
                       </td>
                       <td className="px-6 py-3">
-                        {e.activo && (
-                          <button onClick={() => darBajaEmpleado(e.id, `${e.nombre} ${e.apellido}`)}
-                            className="flex items-center gap-1 text-red-500 hover:text-red-700 text-xs font-medium">
-                            <Trash2 size={12}/> Dar de baja
+                        <div className="flex items-center gap-3">
+                          <button onClick={() => abrirEdicionEmp(e)}
+                            className="flex items-center gap-1 text-blue-500 hover:text-blue-700 text-xs font-medium">
+                            <Edit2 size={12}/> Editar
                           </button>
-                        )}
+                          {e.activo && (
+                            <button onClick={() => darBajaEmpleado(e.id, `${e.nombre} ${e.apellido}`)}
+                              className="flex items-center gap-1 text-red-500 hover:text-red-700 text-xs font-medium">
+                              <Trash2 size={12}/> Dar de baja
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
