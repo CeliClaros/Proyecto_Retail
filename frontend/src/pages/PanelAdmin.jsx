@@ -10,6 +10,8 @@ export default function PanelAdmin({ onLogout }) {
   const [asignaciones, setAsignaciones] = useState([])
   const [loading, setLoading]           = useState(false)
   const [mensaje, setMensaje]           = useState("")
+  const [sortReservas, setSortReservas] = useState({ campo: "id", dir: "desc" })
+  const [filtroEstado, setFiltroEstado] = useState("")
 
   // Form asignaciones
   const [formEmp, setFormEmp]       = useState("")
@@ -463,35 +465,85 @@ export default function PanelAdmin({ onLogout }) {
         )}
 
         {/* RESERVAS */}
-        {seccion === "reservas" && (
-          <div className="bg-white rounded-xl shadow overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50">
-                <tr className="text-left text-gray-500">
-                  <th className="px-6 py-3">ID</th><th className="px-6 py-3">Usuario</th>
-                  <th className="px-6 py-3">Fecha</th><th className="px-6 py-3">Estado</th>
-                  <th className="px-6 py-3">ETA</th><th className="px-6 py-3">Posición</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reservas.map(r => (
-                  <tr key={r.id} className="border-t hover:bg-gray-50">
-                    <td className="px-6 py-3">#{r.id}</td>
-                    <td className="px-6 py-3">Usuario {r.id_usuario}</td>
-                    <td className="px-6 py-3">{new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}</td>
-                    <td className="px-6 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${estadoColor[r.estado]}`}>
-                        {r.estado}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3">{r.tiempo_espera_estimado_min} min</td>
-                    <td className="px-6 py-3">#{r.posicion_en_cola}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        {seccion === "reservas" && (() => {
+          const toggleSort = (campo) => {
+            setSortReservas(s => s.campo === campo
+              ? { campo, dir: s.dir === "asc" ? "desc" : "asc" }
+              : { campo, dir: "asc" })
+          }
+          const flecha = (campo) => sortReservas.campo === campo
+            ? (sortReservas.dir === "asc" ? " ↑" : " ↓") : " ↕"
+
+          const reservasFiltradas = reservas
+            .filter(r => filtroEstado ? r.estado === filtroEstado : true)
+            .sort((a, b) => {
+              const dir = sortReservas.dir === "asc" ? 1 : -1
+              if (sortReservas.campo === "id") return (a.id - b.id) * dir
+              if (sortReservas.campo === "fecha") return (new Date(a.fecha_hora_reserva) - new Date(b.fecha_hora_reserva)) * dir
+              if (sortReservas.campo === "estado") return a.estado.localeCompare(b.estado) * dir
+              if (sortReservas.campo === "eta") return (a.tiempo_espera_estimado_min - b.tiempo_espera_estimado_min) * dir
+              if (sortReservas.campo === "posicion") return (a.posicion_en_cola - b.posicion_en_cola) * dir
+              return 0
+            })
+
+          return (
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 bg-white rounded-xl shadow px-6 py-3">
+                <span className="text-sm text-gray-500 font-medium">Filtrar por estado:</span>
+                <select value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}
+                  className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Todos</option>
+                  {["PENDIENTE","CONFIRMADA","EN_ESPERA","EN_CURSO","ATENDIDA","CANCELADA"].map(e => (
+                    <option key={e} value={e}>{e}</option>
+                  ))}
+                </select>
+                <span className="text-sm text-gray-400">{reservasFiltradas.length} reservas</span>
+              </div>
+
+              <div className="bg-white rounded-xl shadow overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50">
+                    <tr className="text-left text-gray-500">
+                      {[
+                        { label: "ID",       campo: "id" },
+                        { label: "Usuario",  campo: null },
+                        { label: "Fecha",    campo: "fecha" },
+                        { label: "Estado",   campo: "estado" },
+                        { label: "ETA",      campo: "eta" },
+                        { label: "Posición", campo: "posicion" },
+                      ].map(col => (
+                        <th key={col.label}
+                          className={"px-6 py-3 " + (col.campo ? "cursor-pointer hover:text-blue-600 select-none" : "")}
+                          onClick={() => col.campo && toggleSort(col.campo)}>
+                          {col.label}{col.campo && flecha(col.campo)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reservasFiltradas.map(r => (
+                      <tr key={r.id} className="border-t hover:bg-gray-50">
+                        <td className="px-6 py-3">#{r.id}</td>
+                        <td className="px-6 py-3">Usuario {r.id_usuario}</td>
+                        <td className="px-6 py-3">{new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}</td>
+                        <td className="px-6 py-3">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${estadoColor[r.estado]}`}>
+                            {r.estado}
+                          </span>
+                        </td>
+                        <td className="px-6 py-3">{r.tiempo_espera_estimado_min} min</td>
+                        <td className="px-6 py-3">#{r.posicion_en_cola}</td>
+                      </tr>
+                    ))}
+                    {reservasFiltradas.length === 0 && (
+                      <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-400">Sin reservas para este filtro</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )
+        })()}
 
         {/* ASIGNACIONES */}
         {seccion === "asignaciones" && (
