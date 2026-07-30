@@ -176,6 +176,16 @@ export default function PanelAdmin({ onLogout }) {
     }
   }
 
+  const cerrarVencidas = async () => {
+    try {
+      const r = await api.post("/admin/cerrar-reservas-vencidas")
+      setMensaje(`✅ ${r.data.mensaje || "Reservas vencidas cerradas correctamente"}`)
+      cargarDatos()
+    } catch (e) {
+      setMensaje("❌ Error al cerrar reservas vencidas")
+    }
+  }
+
   const stats = {
     pendientes: reservas.filter(r => r.estado === "PENDIENTE").length,
     en_curso:   reservas.filter(r => r.estado === "EN_CURSO").length,
@@ -246,6 +256,12 @@ export default function PanelAdmin({ onLogout }) {
         {/* DASHBOARD */}
         {seccion === "dashboard" && (
           <div>
+            <div className="flex justify-end mb-4">
+              <button onClick={cerrarVencidas}
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                🔒 Cerrar reservas vencidas
+              </button>
+            </div>
             <div className="grid grid-cols-4 gap-4 mb-8">
               {[
                 { label: "Pendientes", value: stats.pendientes, color: "bg-yellow-500" },
