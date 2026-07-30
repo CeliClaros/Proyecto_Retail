@@ -10,8 +10,10 @@ export default function PanelAdmin({ onLogout }) {
   const [asignaciones, setAsignaciones] = useState([])
   const [loading, setLoading]           = useState(false)
   const [mensaje, setMensaje]           = useState("")
-  const [sortReservas, setSortReservas] = useState({ campo: "id", dir: "desc" })
-  const [filtroEstado, setFiltroEstado] = useState("")
+  const [sortReservas, setSortReservas]         = useState({ campo: "id", dir: "desc" })
+  const [filtroEstado, setFiltroEstado]         = useState("")
+  const [sortDashboard, setSortDashboard]       = useState({ campo: "id", dir: "desc" })
+  const [filtroPeriodo, setFiltroPeriodo]       = useState("todas")
 
   // Form asignaciones
   const [formEmp, setFormEmp]       = useState("")
@@ -279,31 +281,82 @@ export default function PanelAdmin({ onLogout }) {
               ))}
             </div>
             <div className="bg-white rounded-xl shadow p-6">
-              <h3 className="font-semibold text-gray-700 mb-4">Últimas reservas</h3>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-gray-500 border-b">
-                    <th className="pb-2">ID</th><th className="pb-2">Usuario</th>
-                    <th className="pb-2">Fecha</th><th className="pb-2">Estado</th>
-                    <th className="pb-2">ETA</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reservas.slice(0, 10).map(r => (
-                    <tr key={r.id} className="border-b last:border-0 hover:bg-gray-50">
-                      <td className="py-2">#{r.id}</td>
-                      <td className="py-2">Usuario {r.id_usuario}</td>
-                      <td className="py-2">{new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}</td>
-                      <td className="py-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${estadoColor[r.estado]}`}>
-                          {r.estado}
-                        </span>
-                      </td>
-                      <td className="py-2">{r.tiempo_espera_estimado_min} min</td>
-                    </tr>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-semibold text-gray-700">Reservas</h3>
+                <div className="flex items-center gap-2">
+                  {["hoy","semana","mes","todas"].map(p => (
+                    <button key={p} onClick={() => setFiltroPeriodo(p)}
+                      className={"px-3 py-1 rounded-lg text-xs font-medium capitalize transition " +
+                        (filtroPeriodo === p ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200")}>
+                      {p}
+                    </button>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
+              {(() => {
+                const ahora = new Date()
+                const reservasPeriodo = reservas.filter(r => {
+                  const fecha = new Date(r.fecha_hora_reserva)
+                  if (filtroPeriodo === "hoy") return fecha.toDateString() === ahora.toDateString()
+                  if (filtroPeriodo === "semana") return fecha >= new Date(ahora.getTime() - 7*24*60*60*1000)
+                  if (filtroPeriodo === "mes") return fecha >= new Date(ahora.getTime() - 30*24*60*60*1000)
+                  return true
+                })
+                const toggleSort = (campo) => setSortDashboard(s =>
+                  s.campo === campo ? { campo, dir: s.dir === "asc" ? "desc" : "asc" } : { campo, dir: "asc" })
+                const flecha = (campo) => sortDashboard.campo === campo
+                  ? (sortDashboard.dir === "asc" ? " ↑" : " ↓") : " ↕"
+                const reservasOrdenadas = [...reservasPeriodo].sort((a, b) => {
+                  const dir = sortDashboard.dir === "asc" ? 1 : -1
+                  if (sortDashboard.campo === "id") return (a.id - b.id) * dir
+                  if (sortDashboard.campo === "fecha") return (new Date(a.fecha_hora_reserva) - new Date(b.fecha_hora_reserva)) * dir
+                  if (sortDashboard.campo === "estado") return a.estado.localeCompare(b.estado) * dir
+                  if (sortDashboard.campo === "eta") return (a.tiempo_espera_estimado_min - b.tiempo_espera_estimado_min) * dir
+                  return 0
+                })
+                return (
+                  <>
+                    <p className="text-xs text-gray-400 mb-3">{reservasOrdenadas.length} reservas</p>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-gray-500 border-b">
+                          {[
+                            { label: "ID",     campo: "id" },
+                            { label: "Usuario", campo: null },
+                            { label: "Fecha",  campo: "fecha" },
+                            { label: "Estado", campo: "estado" },
+                            { label: "ETA",    campo: "eta" },
+                          ].map(col => (
+                            <th key={col.label}
+                              className={"pb-2 " + (col.campo ? "cursor-pointer hover:text-blue-600 select-none" : "")}
+                              onClick={() => col.campo && toggleSort(col.campo)}>
+                              {col.label}{col.campo && flecha(col.campo)}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {reservasOrdenadas.slice(0, 15).map(r => (
+                          <tr key={r.id} className="border-b last:border-0 hover:bg-gray-50">
+                            <td className="py-2">#{r.id}</td>
+                            <td className="py-2">Usuario {r.id_usuario}</td>
+                            <td className="py-2">{new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}</td>
+                            <td className="py-2">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${estadoColor[r.estado]}`}>
+                                {r.estado}
+                              </span>
+                            </td>
+                            <td className="py-2">{r.tiempo_espera_estimado_min} min</td>
+                          </tr>
+                        ))}
+                        {reservasOrdenadas.length === 0 && (
+                          <tr><td colSpan={5} className="py-8 text-center text-gray-400">Sin reservas para este período</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </>
+                )
+              })()}
             </div>
           </div>
         )}
