@@ -193,20 +193,34 @@ export default function PanelAdmin({ onLogout }) {
       setMensaje("❌ Completá nombre y tiempo base")
       return
     }
+    if (parseInt(eventoTiempo) <= 0) {
+      setMensaje("❌ El tiempo base debe ser mayor a 0")
+      return
+    }
     setLoadingEvento(true)
     try {
-      await api.post("/tipo-eventos/", {
-        nombre: eventoNombre, descripcion: eventoDesc,
-        tiempo_base_min: parseInt(eventoTiempo),
-        requisitos: eventoReq || null, activo: true
-      })
-      setMensaje(`✅ Tipo de evento "${eventoNombre}" creado correctamente`)
+      if (eventoEditando) {
+        await api.put(`/tipo-eventos/${eventoEditando.id}`, {
+          nombre: eventoNombre, descripcion: eventoDesc,
+          tiempo_base_min: parseInt(eventoTiempo),
+          requisitos: eventoReq || null, activo: true
+        })
+        setMensaje(`✅ Tipo de evento "${eventoNombre}" actualizado`)
+      } else {
+        await api.post("/tipo-eventos/", {
+          nombre: eventoNombre, descripcion: eventoDesc,
+          tiempo_base_min: parseInt(eventoTiempo),
+          requisitos: eventoReq || null, activo: true
+        })
+        setMensaje(`✅ Tipo de evento "${eventoNombre}" creado`)
+      }
       setMostrarFormEvento(false)
+      setEventoEditando(null)
       setEventoNombre(""); setEventoDesc(""); setEventoTiempo(15); setEventoReq("")
       cargarDatos()
     } catch (e) {
       const msg = e.response?.data?.detail
-      setMensaje("❌ " + (typeof msg === "string" ? msg : "Error al crear tipo de evento"))
+      setMensaje("❌ " + (typeof msg === "string" ? msg : "Error al guardar tipo de evento"))
     } finally {
       setLoadingEvento(false)
     }
@@ -535,7 +549,7 @@ export default function PanelAdmin({ onLogout }) {
 
             {mostrarFormEvento && (
               <div className="bg-white rounded-xl shadow p-6">
-                <h3 className="font-semibold text-gray-800 mb-4">Nuevo tipo de evento</h3>
+                <h3 className="font-semibold text-gray-800 mb-4">{eventoEditando ? `Editar: ${eventoEditando.nombre}` : "Nuevo tipo de evento"}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
                     <label className="block text-xs font-medium text-gray-600 mb-1">Nombre *</label>
@@ -556,7 +570,7 @@ export default function PanelAdmin({ onLogout }) {
                 </div>
                 <button onClick={crearEvento} disabled={loadingEvento}
                   className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50">
-                  {loadingEvento ? "Creando..." : "Crear tipo de evento"}
+                  {loadingEvento ? "Guardando..." : (eventoEditando ? "Guardar cambios" : "Crear tipo de evento")}
                 </button>
               </div>
             )}
@@ -586,12 +600,18 @@ export default function PanelAdmin({ onLogout }) {
                         </span>
                       </td>
                       <td className="px-6 py-3">
-                        {t.activo && (
-                          <button onClick={() => darBajaEvento(t.id, t.nombre)}
-                            className="flex items-center gap-1 text-red-500 hover:text-red-700 text-xs font-medium">
-                            <Trash2 size={12}/> Dar de baja
+                        <div className="flex items-center gap-3">
+                          <button onClick={() => abrirEdicionEvento(t)}
+                            className="flex items-center gap-1 text-blue-500 hover:text-blue-700 text-xs font-medium">
+                            <Edit2 size={12}/> Editar
                           </button>
-                        )}
+                          {t.activo && (
+                            <button onClick={() => darBajaEvento(t.id, t.nombre)}
+                              className="flex items-center gap-1 text-red-500 hover:text-red-700 text-xs font-medium">
+                              <Trash2 size={12}/> Dar de baja
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
