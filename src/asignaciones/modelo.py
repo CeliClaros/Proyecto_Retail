@@ -1,6 +1,7 @@
+from datetime import date, datetime
+
 from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime, date
+
 
 class AsignacionCrear(BaseModel):
     id_empleado:    int
@@ -23,5 +24,5 @@ class AsignacionRespuesta(BaseModel):
 
 class AsignacionTransferir(BaseModel):
     id_empleado_nuevo: int
-    hora_inicio:       Optional[str] = None
-    hora_fin:          Optional[str] = None
+    hora_inicio:       str | None = None
+    hora_fin:          str | None = None

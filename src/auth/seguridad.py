@@ -1,8 +1,8 @@
+import os
 from datetime import datetime, timedelta
-from typing import Optional
+
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-import os
 
 SECRET_KEY = os.getenv("SECRET_KEY", "clave_secreta_cambiar_en_produccion")
 ALGORITHM = "HS256"
@@ -16,7 +16,7 @@ def verificar_password(password_plano: str, password_hash: str) -> bool:
 def hashear_password(password: str) -> str:
     return pwd_context.hash(password)
 
-def crear_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def crear_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})

@@ -1,8 +1,22 @@
-from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, ForeignKey, Text, Numeric, Enum as SAEnum
-from sqlalchemy.orm import relationship
-from datetime import datetime
 import enum
+from datetime import datetime
+
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+)
+from sqlalchemy import Enum as SAEnum
+from sqlalchemy.orm import relationship
+
 from src.config.base_datos import Base
+
 
 class EstadoReservaEnum(str, enum.Enum):
     PENDIENTE  = "PENDIENTE"

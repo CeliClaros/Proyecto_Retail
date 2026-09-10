@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from typing import Optional
 from enum import Enum
+
+from pydantic import BaseModel
+
 
 class RolUsuario(str, Enum):
     CLIENTE    = "CLIENTE"
@@ -12,7 +13,7 @@ class UsuarioCrear(BaseModel):
     nombre:   str
     apellido: str
     email:    str
-    telefono: Optional[str] = None
+    telefono: str | None = None
     password: str
     rol:      RolUsuario = RolUsuario.CLIENTE
 
@@ -21,7 +22,7 @@ class UsuarioRespuesta(BaseModel):
     nombre:   str
     apellido: str
     email:    str
-    telefono: Optional[str] = None
+    telefono: str | None = None
     rol:      str
     activo:   bool
 

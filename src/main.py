@@ -1,8 +1,9 @@
 from fastapi import FastAPI
+
 from src.empleados.rutas import rutas_empleados
-from src.servicios.rutas import rutas_servicios
-from src.queue_atencion.rutas import rutas_atencion  # ✅ LLAMA BIEN A TU CARPETA
 from src.notificaciones.envio import *  # ✅ INCLUYE TUS NOTIFICACIONES
+from src.queue_atencion.rutas import rutas_atencion  # ✅ LLAMA BIEN A TU CARPETA
+from src.servicios.rutas import rutas_servicios
 
 app = FastAPI(
     title="Sistema Gestión de Atención - Retail",

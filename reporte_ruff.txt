@@ -1,0 +1,1916 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/asignaciones/logica.py:1:1
+  |
+1 | / from sqlalchemy.orm import Session
+2 | | from datetime import datetime, date
+3 | | from src.config.modelos_db import AsignacionDiaria, PerformanceEmpleado, Empleado
+  | |_________________________________________________________________________________^
+4 |
+5 |   def obtener_asignacion_activa(
+  |
+help: Organize imports
+  |
+1 + from datetime import date, datetime
+2 +
+3 | from sqlalchemy.orm import Session
+  - from datetime import datetime, date
+  - from src.config.modelos_db import AsignacionDiaria, PerformanceEmpleado, Empleado
+4 |
+5 + from src.config.modelos_db import AsignacionDiaria, Empleado, PerformanceEmpleado
+6 +
+7 +
+8 | def obtener_asignacion_activa(
+  |
+
+RUF013 PEP 484 prohibits implicit `Optional`
+  --> src/asignaciones/logica.py:8:12
+   |
+ 6 |     db: Session,
+ 7 |     id_tipo_evento: int,
+ 8 |     fecha: date = None,
+   |            ^^^^
+ 9 |     hora: str = None
+10 | ) -> AsignacionDiaria:
+   |
+help: Convert to `T | None`
+
+RUF013 PEP 484 prohibits implicit `Optional`
+  --> src/asignaciones/logica.py:9:11
+   |
+ 7 |     id_tipo_evento: int,
+ 8 |     fecha: date = None,
+ 9 |     hora: str = None
+   |           ^^^
+10 | ) -> AsignacionDiaria:
+11 |     """
+   |
+help: Convert to `T | None`
+
+DTZ005 `datetime.datetime.now()` called without a `tz` argument
+  --> src/asignaciones/logica.py:16:17
+   |
+14 |     """
+15 |     if not fecha:
+16 |         fecha = datetime.now().date()
+   |                 ^^^^^^^^^^^^^^
+17 |     if not hora:
+18 |         hora = datetime.now().strftime("%H:%M")
+   |
+help: Pass a `datetime.timezone` object to the `tz` parameter
+
+DTZ005 `datetime.datetime.now()` called without a `tz` argument
+  --> src/asignaciones/logica.py:18:16
+   |
+16 |         fecha = datetime.now().date()
+17 |     if not hora:
+18 |         hora = datetime.now().strftime("%H:%M")
+   |                ^^^^^^^^^^^^^^
+19 |
+20 |     asignaciones = db.query(AsignacionDiaria).filter(
+   |
+help: Pass a `datetime.timezone` object to the `tz` parameter
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/asignaciones/modelo.py:1:1
+  |
+1 | / from pydantic import BaseModel
+2 | | from typing import Optional
+3 | | from datetime import datetime, date
+  | |___________________________________^
+4 |
+5 |   class AsignacionCrear(BaseModel):
+  |
+help: Organize imports
+  |
+1 + from datetime import date, datetime
+2 + from typing import Optional
+3 +
+4 | from pydantic import BaseModel
+  - from typing import Optional
+  - from datetime import datetime, date
+5 |
+6 +
+7 | class AsignacionCrear(BaseModel):
+  |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/asignaciones/modelo.py:26:24
+   |
+24 | class AsignacionTransferir(BaseModel):
+25 |     id_empleado_nuevo: int
+26 |     hora_inicio:       Optional[str] = None
+   |                        ^^^^^^^^^^^^^
+27 |     hora_fin:          Optional[str] = None
+   |
+help: Convert to `X | None`
+   |
+25 |     id_empleado_nuevo: int
+   -     hora_inicio:       Optional[str] = None
+26 +     hora_inicio:       str | None = None
+27 |     hora_fin:          Optional[str] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/asignaciones/modelo.py:27:24
+   |
+25 |     id_empleado_nuevo: int
+26 |     hora_inicio:       Optional[str] = None
+27 |     hora_fin:          Optional[str] = None
+   |                        ^^^^^^^^^^^^^
+help: Convert to `X | None`
+   |
+26 |     hora_inicio:       Optional[str] = None
+   -     hora_fin:          Optional[str] = None
+27 +     hora_fin:          str | None = None
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> src/asignaciones/rutas.py:1:1
+   |
+ 1 | / from fastapi import APIRouter, Depends, HTTPException
+ 2 | | from sqlalchemy.orm import Session
+ 3 | | from datetime import datetime
+ 4 | | from typing import List
+ 5 | | from src.config.base_datos import get_db
+ 6 | | from src.config.modelos_db import AsignacionDiaria, Empleado, TipoEvento, Usuario
+ 7 | | from src.asignaciones.modelo import AsignacionCrear, AsignacionRespuesta, AsignacionTransferir
+ 8 | | from src.asignaciones.logica import obtener_asignacion_activa, obtener_ranking_empleados, sugerir_rotacion
+   | |__________________________________________________________________________________________________________^
+ 9 |
+10 |   rutas_asignaciones = APIRouter()
+   |
+help: Organize imports
+   |
+1  + from datetime import datetime
+2  + from typing import List
+3  +
+4  | from fastapi import APIRouter, Depends, HTTPException
+5  | from sqlalchemy.orm import Session
+   - from datetime import datetime
+   - from typing import List
+6  +
+7  + from src.asignaciones.logica import (
+8  +     obtener_asignacion_activa,
+9  +     obtener_ranking_empleados,
+10 +     sugerir_rotacion,
+11 + )
+12 + from src.asignaciones.modelo import (
+13 +     AsignacionCrear,
+14 +     AsignacionRespuesta,
+15 +     AsignacionTransferir,
+16 + )
+17 | from src.config.base_datos import get_db
+18 | from src.config.modelos_db import AsignacionDiaria, Empleado, TipoEvento, Usuario
+   - from src.asignaciones.modelo import AsignacionCrear, AsignacionRespuesta, AsignacionTransferir
+   - from src.asignaciones.logica import obtener_asignacion_activa, obtener_ranking_empleados, sugerir_rotacion
+19 |
+   |
+
+UP035 `typing.List` is deprecated, use `list` instead
+ --> src/asignaciones/rutas.py:4:1
+  |
+2 | from sqlalchemy.orm import Session
+3 | from datetime import datetime
+4 | from typing import List
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+5 | from src.config.base_datos import get_db
+6 | from src.config.modelos_db import AsignacionDiaria, Empleado, TipoEvento, Usuario
+  |
+
+UP006 [*] Use `list` instead of `List` for type annotation
+  --> src/asignaciones/rutas.py:12:45
+   |
+10 | rutas_asignaciones = APIRouter()
+11 |
+12 | @rutas_asignaciones.get("/", response_model=List[AsignacionRespuesta])
+   |                                             ^^^^
+13 | def listar_asignaciones(db: Session = Depends(get_db)):
+14 |     return db.query(AsignacionDiaria).filter(AsignacionDiaria.activo == True).all()
+   |
+help: Replace with `list`
+   |
+11 |
+   - @rutas_asignaciones.get("/", response_model=List[AsignacionRespuesta])
+12 + @rutas_asignaciones.get("/", response_model=list[AsignacionRespuesta])
+13 | def listar_asignaciones(db: Session = Depends(get_db)):
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/asignaciones/rutas.py:13:39
+   |
+12 | @rutas_asignaciones.get("/", response_model=List[AsignacionRespuesta])
+13 | def listar_asignaciones(db: Session = Depends(get_db)):
+   |                                       ^^^^^^^^^^^^^^^
+14 |     return db.query(AsignacionDiaria).filter(AsignacionDiaria.activo == True).all()
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/asignaciones/rutas.py:17:60
+   |
+16 | @rutas_asignaciones.post("/", response_model=AsignacionRespuesta, status_code=201)
+17 | def crear_asignacion(datos: AsignacionCrear, db: Session = Depends(get_db)):
+   |                                                            ^^^^^^^^^^^^^^^
+18 |     empleado = db.query(Empleado).filter(Empleado.id == datos.id_empleado).first()
+19 |     if not empleado:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/asignaciones/rutas.py:38:58
+   |
+37 | @rutas_asignaciones.get("/activa", summary="Ver quién atiende ahora un trámite")
+38 | def asignacion_activa(id_tipo_evento: int, db: Session = Depends(get_db)):
+   |                                                          ^^^^^^^^^^^^^^^
+39 |     asig = obtener_asignacion_activa(db, id_tipo_evento)
+40 |     if not asig:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/asignaciones/rutas.py:52:55
+   |
+51 | @rutas_asignaciones.delete("/{asignacion_id}", summary="Dar de baja una asignación")
+52 | def baja_asignacion(asignacion_id: int, db: Session = Depends(get_db)):
+   |                                                       ^^^^^^^^^^^^^^^
+53 |     asig = db.query(AsignacionDiaria).filter(AsignacionDiaria.id == asignacion_id).first()
+54 |     if not asig:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/asignaciones/rutas.py:61:90
+   |
+60 | @rutas_asignaciones.post("/{asignacion_id}/transferir", summary="Transferir asignación a otro empleado")
+61 | def transferir_asignacion(asignacion_id: int, datos: AsignacionTransferir, db: Session = Depends(get_db)):
+   |                                                                                          ^^^^^^^^^^^^^^^
+62 |     asig = db.query(AsignacionDiaria).filter(AsignacionDiaria.id == asignacion_id).first()
+63 |     if not asig:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/asignaciones/rutas.py:84:49
+   |
+83 | @rutas_asignaciones.get("/mi-asignacion-hoy")
+84 | def mi_asignacion_hoy(email: str, db: Session = Depends(get_db)):
+   |                                                 ^^^^^^^^^^^^^^^
+85 |     from datetime import date
+86 |     usuario = db.query(Usuario).filter(Usuario.email == email).first()
+   |
+
+DTZ011 `datetime.date.today()` used
+  --> src/asignaciones/rutas.py:89:11
+   |
+87 |     if not usuario or not usuario.id_empleado:
+88 |         return {"asignacion": None, "mensaje": "Sin asignación vinculada"}
+89 |     hoy = date.today()
+   |           ^^^^^^^^^^^^
+90 |     asig = db.query(AsignacionDiaria).filter(
+91 |         AsignacionDiaria.id_empleado    == usuario.id_empleado,
+   |
+help: Use `datetime.datetime.now(tz=...).date()` instead
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+   --> src/asignaciones/rutas.py:122:58
+    |
+121 | @rutas_asignaciones.get("/ranking/{id_tipo_evento}", summary="Ranking de empleados por tipo de trámite")
+122 | def ranking_empleados(id_tipo_evento: int, db: Session = Depends(get_db)):
+    |                                                          ^^^^^^^^^^^^^^^
+123 |     return obtener_ranking_empleados(db, id_tipo_evento)
+    |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+   --> src/asignaciones/rutas.py:126:47
+    |
+125 | @rutas_asignaciones.get("/sugerir-rotacion/{asignacion_id}", summary="Sugerir rotación de empleado")
+126 | def sugerir(asignacion_id: int, db: Session = Depends(get_db)):
+    |                                               ^^^^^^^^^^^^^^^
+127 |     asig = db.query(AsignacionDiaria).filter(AsignacionDiaria.id == asignacion_id).first()
+128 |     if not asig:
+    |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+   --> src/asignaciones/rutas.py:133:39
+    |
+132 | @rutas_asignaciones.get("/performance-general", summary="Performance de todos los empleados por tipo de evento")
+133 | def performance_general(db: Session = Depends(get_db)):
+    |                                       ^^^^^^^^^^^^^^^
+134 |     from src.config.modelos_db import TipoEvento
+135 |     tipos = db.query(TipoEvento).filter(TipoEvento.activo == True).all()
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/auth/modelo.py:1:1
+  |
+1 | / from pydantic import BaseModel
+2 | | from typing import Optional
+3 | | from enum import Enum
+  | |_____________________^
+4 |
+5 |   class RolUsuario(str, Enum):
+  |
+help: Organize imports
+  |
+1 + from enum import Enum
+2 + from typing import Optional
+3 +
+4 | from pydantic import BaseModel
+  - from typing import Optional
+  - from enum import Enum
+5 |
+6 +
+7 | class RolUsuario(str, Enum):
+  |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/auth/modelo.py:15:15
+   |
+13 |     apellido: str
+14 |     email:    str
+15 |     telefono: Optional[str] = None
+   |               ^^^^^^^^^^^^^
+16 |     password: str
+17 |     rol:      RolUsuario = RolUsuario.CLIENTE
+   |
+help: Convert to `X | None`
+   |
+14 |     email:    str
+   -     telefono: Optional[str] = None
+15 +     telefono: str | None = None
+16 |     password: str
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/auth/modelo.py:24:15
+   |
+22 |     apellido: str
+23 |     email:    str
+24 |     telefono: Optional[str] = None
+   |               ^^^^^^^^^^^^^
+25 |     rol:      str
+26 |     activo:   bool
+   |
+help: Convert to `X | None`
+   |
+23 |     email:    str
+   -     telefono: Optional[str] = None
+24 +     telefono: str | None = None
+25 |     rol:      str
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/auth/rutas.py:1:1
+  |
+1 | / from fastapi import APIRouter, Depends, HTTPException
+2 | | from sqlalchemy.orm import Session
+3 | | from src.config.base_datos import get_db
+4 | | from src.config.modelos_db import Usuario
+5 | | from src.auth.modelo import UsuarioCrear, UsuarioRespuesta, LoginRequest
+6 | | from src.auth.seguridad import hashear_password, verificar_password, crear_token
+7 | | from typing import List
+  | |_______________________^
+8 |
+9 |   rutas_auth = APIRouter()
+  |
+help: Organize imports
+   |
+1  + from typing import List
+2  +
+3  | from fastapi import APIRouter, Depends, HTTPException
+4  | from sqlalchemy.orm import Session
+5  +
+6  + from src.auth.modelo import LoginRequest, UsuarioCrear, UsuarioRespuesta
+7  + from src.auth.seguridad import crear_token, hashear_password, verificar_password
+8  | from src.config.base_datos import get_db
+9  | from src.config.modelos_db import Usuario
+   - from src.auth.modelo import UsuarioCrear, UsuarioRespuesta, LoginRequest
+   - from src.auth.seguridad import hashear_password, verificar_password, crear_token
+   - from typing import List
+10 |
+   |
+
+UP035 `typing.List` is deprecated, use `list` instead
+ --> src/auth/rutas.py:7:1
+  |
+5 | from src.auth.modelo import UsuarioCrear, UsuarioRespuesta, LoginRequest
+6 | from src.auth.seguridad import hashear_password, verificar_password, crear_token
+7 | from typing import List
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+8 |
+9 | rutas_auth = APIRouter()
+  |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/auth/rutas.py:12:58
+   |
+11 | @rutas_auth.post("/registro", response_model=UsuarioRespuesta, status_code=201)
+12 | def registrar_usuario(datos: UsuarioCrear, db: Session = Depends(get_db)):
+   |                                                          ^^^^^^^^^^^^^^^
+13 |     existe = db.query(Usuario).filter(Usuario.email == datos.email).first()
+14 |     if existe:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/auth/rutas.py:30:46
+   |
+29 | @rutas_auth.post("/login")
+30 | def login(datos: LoginRequest, db: Session = Depends(get_db)):
+   |                                              ^^^^^^^^^^^^^^^
+31 |     usuario = db.query(Usuario).filter(Usuario.email == datos.email).first()
+32 |     if not usuario or not verificar_password(datos.password, usuario.password):
+   |
+
+UP006 [*] Use `list` instead of `List` for type annotation
+  --> src/auth/rutas.py:44:45
+   |
+42 |     }
+43 |
+44 | @rutas_auth.get("/usuarios", response_model=List[UsuarioRespuesta])
+   |                                             ^^^^
+45 | def listar_usuarios(db: Session = Depends(get_db)):
+46 |     return db.query(Usuario).filter(Usuario.activo == True).all()
+   |
+help: Replace with `list`
+   |
+43 |
+   - @rutas_auth.get("/usuarios", response_model=List[UsuarioRespuesta])
+44 + @rutas_auth.get("/usuarios", response_model=list[UsuarioRespuesta])
+45 | def listar_usuarios(db: Session = Depends(get_db)):
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/auth/rutas.py:45:35
+   |
+44 | @rutas_auth.get("/usuarios", response_model=List[UsuarioRespuesta])
+45 | def listar_usuarios(db: Session = Depends(get_db)):
+   |                                   ^^^^^^^^^^^^^^^
+46 |     return db.query(Usuario).filter(Usuario.activo == True).all()
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/auth/seguridad.py:1:1
+  |
+1 | / from datetime import datetime, timedelta
+2 | | from typing import Optional
+3 | | from jose import JWTError, jwt
+4 | | from passlib.context import CryptContext
+5 | | import os
+  | |_________^
+6 |
+7 |   SECRET_KEY = os.getenv("SECRET_KEY", "clave_secreta_cambiar_en_produccion")
+  |
+help: Organize imports
+  |
+1 + import os
+2 | from datetime import datetime, timedelta
+3 | from typing import Optional
+4 +
+5 | from jose import JWTError, jwt
+6 | from passlib.context import CryptContext
+  - import os
+7 |
+  |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/auth/seguridad.py:19:44
+   |
+17 |     return pwd_context.hash(password)
+18 |
+19 | def crear_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+   |                                            ^^^^^^^^^^^^^^^^^^^
+20 |     to_encode = data.copy()
+21 |     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+   |
+help: Convert to `X | None`
+   |
+18 |
+   - def crear_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+19 + def crear_token(data: dict, expires_delta: timedelta | None = None) -> str:
+20 |     to_encode = data.copy()
+   |
+
+DTZ003 `datetime.datetime.utcnow()` used
+  --> src/auth/seguridad.py:21:14
+   |
+19 | def crear_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+20 |     to_encode = data.copy()
+21 |     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+   |              ^^^^^^^^^^^^^^^^^
+22 |     to_encode.update({"exp": expire})
+23 |     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+   |
+help: Use `datetime.datetime.now(tz=...)` instead
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/config/base_datos.py:1:1
+  |
+1 | / import os
+2 | | from dotenv import load_dotenv
+3 | | from sqlalchemy import create_engine
+4 | | from sqlalchemy.ext.declarative import declarative_base
+5 | | from sqlalchemy.orm import sessionmaker
+  | |_______________________________________^
+6 |
+7 |   load_dotenv()
+  |
+help: Organize imports
+  |
+1 | import os
+2 +
+3 | from dotenv import load_dotenv
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> src/config/base_datos.py:26:5
+   |
+25 |   def crear_tablas():
+26 | /     from src.config.modelos_db import (
+27 | |         Usuario, Empleado, TipoEvento,
+28 | |         AsignacionDiaria, Reserva,
+29 | |         HistorialAtencion, PerformanceEmpleado
+30 | |     )
+   | |_____^
+31 |       Base.metadata.create_all(bind=engine)
+   |
+help: Organize imports
+   |
+26 |     from src.config.modelos_db import (
+   -         Usuario, Empleado, TipoEvento,
+   -         AsignacionDiaria, Reserva,
+   -         HistorialAtencion, PerformanceEmpleado
+27 +         AsignacionDiaria,
+28 +         Empleado,
+29 +         HistorialAtencion,
+30 +         PerformanceEmpleado,
+31 +         Reserva,
+32 +         TipoEvento,
+33 +         Usuario,
+34 |     )
+   |
+
+F401 [*] `src.config.modelos_db.Usuario` imported but unused
+  --> src/config/base_datos.py:27:9
+   |
+25 | def crear_tablas():
+26 |     from src.config.modelos_db import (
+27 |         Usuario, Empleado, TipoEvento,
+   |         ^^^^^^^
+28 |         AsignacionDiaria, Reserva,
+29 |         HistorialAtencion, PerformanceEmpleado
+   |
+help: Remove unused import
+   |
+25 | def crear_tablas():
+   -     from src.config.modelos_db import (
+   -         Usuario, Empleado, TipoEvento,
+   -         AsignacionDiaria, Reserva,
+   -         HistorialAtencion, PerformanceEmpleado
+   -     )
+26 |     Base.metadata.create_all(bind=engine)
+   |
+
+F401 [*] `src.config.modelos_db.Empleado` imported but unused
+  --> src/config/base_datos.py:27:18
+   |
+25 | def crear_tablas():
+26 |     from src.config.modelos_db import (
+27 |         Usuario, Empleado, TipoEvento,
+   |                  ^^^^^^^^
+28 |         AsignacionDiaria, Reserva,
+29 |         HistorialAtencion, PerformanceEmpleado
+   |
+help: Remove unused import
+   |
+25 | def crear_tablas():
+   -     from src.config.modelos_db import (
+   -         Usuario, Empleado, TipoEvento,
+   -         AsignacionDiaria, Reserva,
+   -         HistorialAtencion, PerformanceEmpleado
+   -     )
+26 |     Base.metadata.create_all(bind=engine)
+   |
+
+F401 [*] `src.config.modelos_db.TipoEvento` imported but unused
+  --> src/config/base_datos.py:27:28
+   |
+25 | def crear_tablas():
+26 |     from src.config.modelos_db import (
+27 |         Usuario, Empleado, TipoEvento,
+   |                            ^^^^^^^^^^
+28 |         AsignacionDiaria, Reserva,
+29 |         HistorialAtencion, PerformanceEmpleado
+   |
+help: Remove unused import
+   |
+25 | def crear_tablas():
+   -     from src.config.modelos_db import (
+   -         Usuario, Empleado, TipoEvento,
+   -         AsignacionDiaria, Reserva,
+   -         HistorialAtencion, PerformanceEmpleado
+   -     )
+26 |     Base.metadata.create_all(bind=engine)
+   |
+
+F401 [*] `src.config.modelos_db.AsignacionDiaria` imported but unused
+  --> src/config/base_datos.py:28:9
+   |
+26 |     from src.config.modelos_db import (
+27 |         Usuario, Empleado, TipoEvento,
+28 |         AsignacionDiaria, Reserva,
+   |         ^^^^^^^^^^^^^^^^
+29 |         HistorialAtencion, PerformanceEmpleado
+30 |     )
+   |
+help: Remove unused import
+   |
+25 | def crear_tablas():
+   -     from src.config.modelos_db import (
+   -         Usuario, Empleado, TipoEvento,
+   -         AsignacionDiaria, Reserva,
+   -         HistorialAtencion, PerformanceEmpleado
+   -     )
+26 |     Base.metadata.create_all(bind=engine)
+   |
+
+F401 [*] `src.config.modelos_db.Reserva` imported but unused
+  --> src/config/base_datos.py:28:27
+   |
+26 |     from src.config.modelos_db import (
+27 |         Usuario, Empleado, TipoEvento,
+28 |         AsignacionDiaria, Reserva,
+   |                           ^^^^^^^
+29 |         HistorialAtencion, PerformanceEmpleado
+30 |     )
+   |
+help: Remove unused import
+   |
+25 | def crear_tablas():
+   -     from src.config.modelos_db import (
+   -         Usuario, Empleado, TipoEvento,
+   -         AsignacionDiaria, Reserva,
+   -         HistorialAtencion, PerformanceEmpleado
+   -     )
+26 |     Base.metadata.create_all(bind=engine)
+   |
+
+F401 [*] `src.config.modelos_db.HistorialAtencion` imported but unused
+  --> src/config/base_datos.py:29:9
+   |
+27 |         Usuario, Empleado, TipoEvento,
+28 |         AsignacionDiaria, Reserva,
+29 |         HistorialAtencion, PerformanceEmpleado
+   |         ^^^^^^^^^^^^^^^^^
+30 |     )
+31 |     Base.metadata.create_all(bind=engine)
+   |
+help: Remove unused import
+   |
+25 | def crear_tablas():
+   -     from src.config.modelos_db import (
+   -         Usuario, Empleado, TipoEvento,
+   -         AsignacionDiaria, Reserva,
+   -         HistorialAtencion, PerformanceEmpleado
+   -     )
+26 |     Base.metadata.create_all(bind=engine)
+   |
+
+F401 [*] `src.config.modelos_db.PerformanceEmpleado` imported but unused
+  --> src/config/base_datos.py:29:28
+   |
+27 |         Usuario, Empleado, TipoEvento,
+28 |         AsignacionDiaria, Reserva,
+29 |         HistorialAtencion, PerformanceEmpleado
+   |                            ^^^^^^^^^^^^^^^^^^^
+30 |     )
+31 |     Base.metadata.create_all(bind=engine)
+   |
+help: Remove unused import
+   |
+25 | def crear_tablas():
+   -     from src.config.modelos_db import (
+   -         Usuario, Empleado, TipoEvento,
+   -         AsignacionDiaria, Reserva,
+   -         HistorialAtencion, PerformanceEmpleado
+   -     )
+26 |     Base.metadata.create_all(bind=engine)
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/config/modelos_db.py:1:1
+  |
+1 | / from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, ForeignKey, Text, Numeric, Enum as SAEnum
+2 | | from sqlalchemy.orm import relationship
+3 | | from datetime import datetime
+4 | | import enum
+5 | | from src.config.base_datos import Base
+  | |______________________________________^
+6 |
+7 |   class EstadoReservaEnum(str, enum.Enum):
+  |
+help: Organize imports
+   |
+   - from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, ForeignKey, Text, Numeric, Enum as SAEnum
+1  + import enum
+2  + from datetime import datetime
+3  +
+4  + from sqlalchemy import (
+5  +     Boolean,
+6  +     Column,
+7  +     DateTime,
+8  +     Float,
+9  +     ForeignKey,
+10 +     Integer,
+11 +     Numeric,
+12 +     String,
+13 +     Text,
+14 + )
+15 + from sqlalchemy import Enum as SAEnum
+16 | from sqlalchemy.orm import relationship
+   - from datetime import datetime
+   - import enum
+17 +
+18 | from src.config.base_datos import Base
+19 |
+20 +
+21 | class EstadoReservaEnum(str, enum.Enum):
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/config/scheduler.py:1:1
+  |
+1 | / from apscheduler.schedulers.background import BackgroundScheduler
+2 | | from datetime import datetime
+3 | | from sqlalchemy.orm import Session
+4 | | from src.config.base_datos import SessionLocal
+5 | | from src.config.modelos_db import Reserva, EstadoReservaEnum, LogSistema
+  | |________________________________________________________________________^
+6 |
+7 |   def cerrar_reservas_vencidas():
+  |
+help: Organize imports
+  |
+1 + from datetime import datetime
+2 +
+3 | from apscheduler.schedulers.background import BackgroundScheduler
+  - from datetime import datetime
+4 | from sqlalchemy.orm import Session
+5 +
+6 | from src.config.base_datos import SessionLocal
+  - from src.config.modelos_db import Reserva, EstadoReservaEnum, LogSistema
+7 + from src.config.modelos_db import EstadoReservaEnum, LogSistema, Reserva
+8 +
+9 |
+  |
+
+DTZ003 `datetime.datetime.utcnow()` used
+  --> src/config/scheduler.py:10:17
+   |
+ 8 |     db: Session = SessionLocal()
+ 9 |     try:
+10 |         ahora = datetime.utcnow()
+   |                 ^^^^^^^^^^^^^^^^^
+11 |         estados_activos = [
+12 |             EstadoReservaEnum.PENDIENTE,
+   |
+help: Use `datetime.datetime.now(tz=...)` instead
+
+BLE001 Do not catch blind exception: `Exception`
+  --> src/config/scheduler.py:35:12
+   |
+33 |         db.commit()
+34 |         print(f"[SCHEDULER] {count} reservas cerradas automáticamente")
+35 |     except Exception as e:
+   |            ^^^^^^^^^
+36 |         print(f"[SCHEDULER] Error: {e}")
+37 |         db.rollback()
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/empleados/modelo.py:1:1
+  |
+1 | / from pydantic import BaseModel
+2 | | from typing import Optional
+3 | | from datetime import datetime
+  | |_____________________________^
+4 |
+5 |   class EmpleadoCrear(BaseModel):
+  |
+help: Organize imports
+  |
+1 + from datetime import datetime
+2 + from typing import Optional
+3 +
+4 | from pydantic import BaseModel
+  - from typing import Optional
+  - from datetime import datetime
+5 |
+6 +
+7 | class EmpleadoCrear(BaseModel):
+  |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/empleados/modelo.py:9:15
+   |
+ 7 |     apellido: str
+ 8 |     email:    str
+ 9 |     telefono: Optional[str] = None
+   |               ^^^^^^^^^^^^^
+10 |     activo:   bool = True
+   |
+help: Convert to `X | None`
+   |
+8  |     email:    str
+   -     telefono: Optional[str] = None
+9  +     telefono: str | None = None
+10 |     activo:   bool = True
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/empleados/modelo.py:18:17
+   |
+16 |     apellido:   str
+17 |     email:      str
+18 |     telefono:   Optional[str] = None
+   |                 ^^^^^^^^^^^^^
+19 |     activo:     bool
+20 |     fecha_alta: datetime
+   |
+help: Convert to `X | None`
+   |
+17 |     email:      str
+   -     telefono:   Optional[str] = None
+18 +     telefono:   str | None = None
+19 |     activo:     bool
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/empleados/rutas.py:1:1
+  |
+1 | / from fastapi import APIRouter, Depends, HTTPException
+2 | | from sqlalchemy.orm import Session
+3 | | from src.config.base_datos import get_db
+4 | | from src.config.modelos_db import Empleado
+5 | | from src.empleados.modelo import EmpleadoCrear, EmpleadoRespuesta
+6 | | from typing import List
+  | |_______________________^
+7 |
+8 |   rutas_empleados = APIRouter()
+  |
+help: Organize imports
+  |
+1 + from typing import List
+2 +
+3 | from fastapi import APIRouter, Depends, HTTPException
+4 | from sqlalchemy.orm import Session
+5 +
+6 | from src.config.base_datos import get_db
+7 | from src.config.modelos_db import Empleado
+8 | from src.empleados.modelo import EmpleadoCrear, EmpleadoRespuesta
+  - from typing import List
+9 |
+  |
+
+UP035 `typing.List` is deprecated, use `list` instead
+ --> src/empleados/rutas.py:6:1
+  |
+4 | from src.config.modelos_db import Empleado
+5 | from src.empleados.modelo import EmpleadoCrear, EmpleadoRespuesta
+6 | from typing import List
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+7 |
+8 | rutas_empleados = APIRouter()
+  |
+
+UP006 [*] Use `list` instead of `List` for type annotation
+  --> src/empleados/rutas.py:15:42
+   |
+13 |     return f"EMP-{numero:04d}"
+14 |
+15 | @rutas_empleados.get("/", response_model=List[EmpleadoRespuesta])
+   |                                          ^^^^
+16 | def listar_empleados(db: Session = Depends(get_db)):
+17 |     return db.query(Empleado).filter(Empleado.activo == True).all()
+   |
+help: Replace with `list`
+   |
+14 |
+   - @rutas_empleados.get("/", response_model=List[EmpleadoRespuesta])
+15 + @rutas_empleados.get("/", response_model=list[EmpleadoRespuesta])
+16 | def listar_empleados(db: Session = Depends(get_db)):
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/empleados/rutas.py:16:36
+   |
+15 | @rutas_empleados.get("/", response_model=List[EmpleadoRespuesta])
+16 | def listar_empleados(db: Session = Depends(get_db)):
+   |                                    ^^^^^^^^^^^^^^^
+17 |     return db.query(Empleado).filter(Empleado.activo == True).all()
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/empleados/rutas.py:20:59
+   |
+19 | @rutas_empleados.post("/", response_model=EmpleadoRespuesta, status_code=201)
+20 | def crear_empleado(empleado: EmpleadoCrear, db: Session = Depends(get_db)):
+   |                                                           ^^^^^^^^^^^^^^^
+21 |     datos = empleado.model_dump()
+22 |     datos["legajo"] = generar_legajo(db)
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/empleados/rutas.py:30:54
+   |
+29 | @rutas_empleados.get("/{empleado_id}", response_model=EmpleadoRespuesta)
+30 | def obtener_empleado(empleado_id: int, db: Session = Depends(get_db)):
+   |                                                      ^^^^^^^^^^^^^^^
+31 |     empleado = db.query(Empleado).filter(Empleado.id == empleado_id).first()
+32 |     if not empleado:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/empleados/rutas.py:37:79
+   |
+36 | @rutas_empleados.put("/{empleado_id}", response_model=EmpleadoRespuesta)
+37 | def actualizar_empleado(empleado_id: int, datos: EmpleadoCrear, db: Session = Depends(get_db)):
+   |                                                                               ^^^^^^^^^^^^^^^
+38 |     empleado = db.query(Empleado).filter(Empleado.id == empleado_id).first()
+39 |     if not empleado:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/empleados/rutas.py:48:55
+   |
+47 | @rutas_empleados.delete("/{empleado_id}")
+48 | def eliminar_empleado(empleado_id: int, db: Session = Depends(get_db)):
+   |                                                       ^^^^^^^^^^^^^^^
+49 |     empleado = db.query(Empleado).filter(Empleado.id == empleado_id).first()
+50 |     if not empleado:
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/main.py:1:1
+  |
+1 | / from fastapi import FastAPI
+2 | | from src.empleados.rutas import rutas_empleados
+3 | | from src.servicios.rutas import rutas_servicios
+4 | | from src.queue_atencion.rutas import rutas_atencion  # ✅ LLAMA BIEN A TU CARPETA
+5 | | from src.notificaciones.envio import *  # ✅ INCLUYE TUS NOTIFICACIONES
+  | |______________________________________^
+6 |
+7 |   app = FastAPI(
+  |
+help: Organize imports
+  |
+1 | from fastapi import FastAPI
+2 +
+3 | from src.empleados.rutas import rutas_empleados
+  - from src.servicios.rutas import rutas_servicios
+  - from src.queue_atencion.rutas import rutas_atencion  # ✅ LLAMA BIEN A TU CARPETA
+4 | from src.notificaciones.envio import *  # ✅ INCLUYE TUS NOTIFICACIONES
+5 + from src.queue_atencion.rutas import rutas_atencion  # ✅ LLAMA BIEN A TU CARPETA
+6 + from src.servicios.rutas import rutas_servicios
+7 |
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/notificaciones/envio.py:1:1
+  |
+1 | / from fastapi import APIRouter
+2 | | from twilio.rest import Client
+3 | | from src.notificaciones.maps import calcular_tiempo_viaje, calcular_cuando_avisar
+4 | | import os
+  | |_________^
+5 |
+6 |   rutas_notificaciones = APIRouter()
+  |
+help: Organize imports
+  |
+1 + import os
+2 +
+3 | from fastapi import APIRouter
+4 | from twilio.rest import Client
+  - from src.notificaciones.maps import calcular_tiempo_viaje, calcular_cuando_avisar
+  - import os
+5 |
+6 + from src.notificaciones.maps import calcular_cuando_avisar, calcular_tiempo_viaje
+7 +
+8 | rutas_notificaciones = APIRouter()
+  |
+
+BLE001 Do not catch blind exception: `Exception`
+  --> src/notificaciones/envio.py:24:12
+   |
+22 |         print(f"[WHATSAPP] Enviado a {telefono}")
+23 |         return True
+24 |     except Exception as e:
+   |            ^^^^^^^^^
+25 |         print(f"[WHATSAPP] Error: {e}")
+26 |         return False
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/notificaciones/maps.py:1:1
+  |
+1 | / import os
+2 | | import requests
+  | |_______________^
+3 |
+4 |   def calcular_tiempo_viaje(
+  |
+help: Organize imports
+  |
+1 | import os
+2 +
+3 | import requests
+4 |
+5 +
+6 | def calcular_tiempo_viaje(
+  |
+
+BLE001 Do not catch blind exception: `Exception`
+  --> src/notificaciones/maps.py:37:12
+   |
+35 |             # MOCK: API no disponible, devuelve datos simulados
+36 |             return _mock_viaje(origen_lat, origen_lng, destino_lat, destino_lng)
+37 |     except Exception as e:
+   |            ^^^^^^^^^
+38 |         return _mock_viaje(origen_lat, origen_lng, destino_lat, destino_lng)
+   |
+
+F841 [*] Local variable `e` is assigned to but never used
+  --> src/notificaciones/maps.py:37:25
+   |
+35 |             # MOCK: API no disponible, devuelve datos simulados
+36 |             return _mock_viaje(origen_lat, origen_lng, destino_lat, destino_lng)
+37 |     except Exception as e:
+   |                         ^
+38 |         return _mock_viaje(origen_lat, origen_lng, destino_lat, destino_lng)
+   |
+help: Remove assignment to unused variable `e`
+   |
+36 |             return _mock_viaje(origen_lat, origen_lng, destino_lat, destino_lng)
+   -     except Exception as e:
+37 +     except Exception:
+38 |         return _mock_viaje(origen_lat, origen_lng, destino_lat, destino_lng)
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/queue_atencion/logica.py:1:1
+  |
+1 | / from sqlalchemy.orm import Session
+2 | | from src.config.modelos_db import Reserva, PerformanceEmpleado, EstadoReservaEnum
+  | |_________________________________________________________________________________^
+3 |
+4 |   def calcular_tiempo_espera(
+  |
+help: Organize imports
+  |
+1 | from sqlalchemy.orm import Session
+  - from src.config.modelos_db import Reserva, PerformanceEmpleado, EstadoReservaEnum
+2 |
+3 + from src.config.modelos_db import EstadoReservaEnum, PerformanceEmpleado, Reserva
+4 +
+5 +
+6 | def calcular_tiempo_espera(
+  |
+
+DTZ003 `datetime.datetime.utcnow()` used
+  --> src/queue_atencion/logica.py:76:45
+   |
+74 |         performance.promedio_duracion_min = round(nuevo_promedio, 2)
+75 |         performance.total_atenciones      = total + 1
+76 |         performance.ultima_actualizacion  = datetime.utcnow()
+   |                                             ^^^^^^^^^^^^^^^^^
+77 |     else:
+78 |         performance = PerformanceEmpleado(
+   |
+help: Use `datetime.datetime.now(tz=...)` instead
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/queue_atencion/modelo.py:1:1
+  |
+1 | / from pydantic import BaseModel
+2 | | from typing import Optional
+3 | | from datetime import datetime
+4 | | from enum import Enum
+  | |_____________________^
+5 |
+6 |   class EstadoReserva(str, Enum):
+  |
+help: Organize imports
+  |
+  - from pydantic import BaseModel
+  - from typing import Optional
+1 | from datetime import datetime
+2 | from enum import Enum
+3 + from typing import Optional
+4 +
+5 + from pydantic import BaseModel
+6 +
+7 |
+  |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:17:28
+   |
+15 |     id_usuario:            int
+16 |     id_tipo_evento:        int
+17 |     id_empleado_asignado:  Optional[int] = None
+   |                            ^^^^^^^^^^^^^
+18 |     fecha_hora_reserva:    Optional[datetime] = None
+19 |     canal_notif:           Optional[str] = "whatsapp"
+   |
+help: Convert to `X | None`
+   |
+16 |     id_tipo_evento:        int
+   -     id_empleado_asignado:  Optional[int] = None
+17 +     id_empleado_asignado:  int | None = None
+18 |     fecha_hora_reserva:    Optional[datetime] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:18:28
+   |
+16 |     id_tipo_evento:        int
+17 |     id_empleado_asignado:  Optional[int] = None
+18 |     fecha_hora_reserva:    Optional[datetime] = None
+   |                            ^^^^^^^^^^^^^^^^^^
+19 |     canal_notif:           Optional[str] = "whatsapp"
+20 |     ubicacion_lat:         Optional[float] = None
+   |
+help: Convert to `X | None`
+   |
+17 |     id_empleado_asignado:  Optional[int] = None
+   -     fecha_hora_reserva:    Optional[datetime] = None
+18 +     fecha_hora_reserva:    datetime | None = None
+19 |     canal_notif:           Optional[str] = "whatsapp"
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:19:28
+   |
+17 |     id_empleado_asignado:  Optional[int] = None
+18 |     fecha_hora_reserva:    Optional[datetime] = None
+19 |     canal_notif:           Optional[str] = "whatsapp"
+   |                            ^^^^^^^^^^^^^
+20 |     ubicacion_lat:         Optional[float] = None
+21 |     ubicacion_lng:         Optional[float] = None
+   |
+help: Convert to `X | None`
+   |
+18 |     fecha_hora_reserva:    Optional[datetime] = None
+   -     canal_notif:           Optional[str] = "whatsapp"
+19 +     canal_notif:           str | None = "whatsapp"
+20 |     ubicacion_lat:         Optional[float] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:20:28
+   |
+18 |     fecha_hora_reserva:    Optional[datetime] = None
+19 |     canal_notif:           Optional[str] = "whatsapp"
+20 |     ubicacion_lat:         Optional[float] = None
+   |                            ^^^^^^^^^^^^^^^
+21 |     ubicacion_lng:         Optional[float] = None
+   |
+help: Convert to `X | None`
+   |
+19 |     canal_notif:           Optional[str] = "whatsapp"
+   -     ubicacion_lat:         Optional[float] = None
+20 +     ubicacion_lat:         float | None = None
+21 |     ubicacion_lng:         Optional[float] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:21:28
+   |
+19 |     canal_notif:           Optional[str] = "whatsapp"
+20 |     ubicacion_lat:         Optional[float] = None
+21 |     ubicacion_lng:         Optional[float] = None
+   |                            ^^^^^^^^^^^^^^^
+22 |
+23 | class ReservaRespuesta(BaseModel):
+   |
+help: Convert to `X | None`
+   |
+20 |     ubicacion_lat:         Optional[float] = None
+   -     ubicacion_lng:         Optional[float] = None
+21 +     ubicacion_lng:         float | None = None
+22 |
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:27:33
+   |
+25 |     id_usuario:                 int
+26 |     id_tipo_evento:             int
+27 |     id_empleado_asignado:       Optional[int] = None
+   |                                 ^^^^^^^^^^^^^
+28 |     fecha_hora_reserva:         datetime
+29 |     estado:                     EstadoReserva
+   |
+help: Convert to `X | None`
+   |
+26 |     id_tipo_evento:             int
+   -     id_empleado_asignado:       Optional[int] = None
+27 +     id_empleado_asignado:       int | None = None
+28 |     fecha_hora_reserva:         datetime
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:32:33
+   |
+30 |     tiempo_espera_estimado_min: int
+31 |     posicion_en_cola:           int
+32 |     fecha_hora_checkin:         Optional[datetime] = None
+   |                                 ^^^^^^^^^^^^^^^^^^
+33 |     fecha_hora_checkout:        Optional[datetime] = None
+34 |     duracion_real_min:          Optional[int] = None
+   |
+help: Convert to `X | None`
+   |
+31 |     posicion_en_cola:           int
+   -     fecha_hora_checkin:         Optional[datetime] = None
+32 +     fecha_hora_checkin:         datetime | None = None
+33 |     fecha_hora_checkout:        Optional[datetime] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:33:33
+   |
+31 |     posicion_en_cola:           int
+32 |     fecha_hora_checkin:         Optional[datetime] = None
+33 |     fecha_hora_checkout:        Optional[datetime] = None
+   |                                 ^^^^^^^^^^^^^^^^^^
+34 |     duracion_real_min:          Optional[int] = None
+35 |     canal_notif:                Optional[str] = None
+   |
+help: Convert to `X | None`
+   |
+32 |     fecha_hora_checkin:         Optional[datetime] = None
+   -     fecha_hora_checkout:        Optional[datetime] = None
+33 +     fecha_hora_checkout:        datetime | None = None
+34 |     duracion_real_min:          Optional[int] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:34:33
+   |
+32 |     fecha_hora_checkin:         Optional[datetime] = None
+33 |     fecha_hora_checkout:        Optional[datetime] = None
+34 |     duracion_real_min:          Optional[int] = None
+   |                                 ^^^^^^^^^^^^^
+35 |     canal_notif:                Optional[str] = None
+36 |     ubicacion_lat:              Optional[float] = None
+   |
+help: Convert to `X | None`
+   |
+33 |     fecha_hora_checkout:        Optional[datetime] = None
+   -     duracion_real_min:          Optional[int] = None
+34 +     duracion_real_min:          int | None = None
+35 |     canal_notif:                Optional[str] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:35:33
+   |
+33 |     fecha_hora_checkout:        Optional[datetime] = None
+34 |     duracion_real_min:          Optional[int] = None
+35 |     canal_notif:                Optional[str] = None
+   |                                 ^^^^^^^^^^^^^
+36 |     ubicacion_lat:              Optional[float] = None
+37 |     ubicacion_lng:              Optional[float] = None
+   |
+help: Convert to `X | None`
+   |
+34 |     duracion_real_min:          Optional[int] = None
+   -     canal_notif:                Optional[str] = None
+35 +     canal_notif:                str | None = None
+36 |     ubicacion_lat:              Optional[float] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:36:33
+   |
+34 |     duracion_real_min:          Optional[int] = None
+35 |     canal_notif:                Optional[str] = None
+36 |     ubicacion_lat:              Optional[float] = None
+   |                                 ^^^^^^^^^^^^^^^
+37 |     ubicacion_lng:              Optional[float] = None
+38 |     fecha_alta:                 datetime
+   |
+help: Convert to `X | None`
+   |
+35 |     canal_notif:                Optional[str] = None
+   -     ubicacion_lat:              Optional[float] = None
+36 +     ubicacion_lat:              float | None = None
+37 |     ubicacion_lng:              Optional[float] = None
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/queue_atencion/modelo.py:37:33
+   |
+35 |     canal_notif:                Optional[str] = None
+36 |     ubicacion_lat:              Optional[float] = None
+37 |     ubicacion_lng:              Optional[float] = None
+   |                                 ^^^^^^^^^^^^^^^
+38 |     fecha_alta:                 datetime
+   |
+help: Convert to `X | None`
+   |
+36 |     ubicacion_lat:              Optional[float] = None
+   -     ubicacion_lng:              Optional[float] = None
+37 +     ubicacion_lng:              float | None = None
+38 |     fecha_alta:                 datetime
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> src/queue_atencion/rutas.py:1:1
+   |
+ 1 | / from fastapi import APIRouter, Depends, HTTPException
+ 2 | | from sqlalchemy.orm import Session
+ 3 | | from datetime import datetime, date
+ 4 | | from typing import List
+ 5 | | from src.config.base_datos import get_db
+ 6 | | from src.config.modelos_db import Reserva, EstadoReservaEnum, HistorialAtencion, Usuario, TipoEvento
+ 7 | | from src.notificaciones.envio import enviar_confirmacion_con_ruta
+ 8 | | from src.queue_atencion.modelo import ReservaCrear, ReservaRespuesta
+ 9 | | from src.queue_atencion.logica import (
+10 | |     calcular_tiempo_espera,
+11 | |     calcular_posicion_en_cola,
+12 | |     actualizar_performance
+13 | | )
+   | |_^
+14 |
+15 |   rutas_atencion = APIRouter()
+   |
+help: Organize imports
+   |
+1  + from datetime import date, datetime
+2  + from typing import List
+3  +
+4  | from fastapi import APIRouter, Depends, HTTPException
+5  | from sqlalchemy.orm import Session
+   - from datetime import datetime, date
+   - from typing import List
+6  +
+7  | from src.config.base_datos import get_db
+   - from src.config.modelos_db import Reserva, EstadoReservaEnum, HistorialAtencion, Usuario, TipoEvento
+8  + from src.config.modelos_db import (
+9  +     EstadoReservaEnum,
+10 +     HistorialAtencion,
+11 +     Reserva,
+12 +     TipoEvento,
+13 +     Usuario,
+14 + )
+15 | from src.notificaciones.envio import enviar_confirmacion_con_ruta
+   - from src.queue_atencion.modelo import ReservaCrear, ReservaRespuesta
+16 | from src.queue_atencion.logica import (
+   -     calcular_tiempo_espera,
+17 +     actualizar_performance,
+18 |     calcular_posicion_en_cola,
+   -     actualizar_performance
+19 +     calcular_tiempo_espera,
+20 | )
+21 + from src.queue_atencion.modelo import ReservaCrear, ReservaRespuesta
+22 |
+   |
+
+UP035 `typing.List` is deprecated, use `list` instead
+ --> src/queue_atencion/rutas.py:4:1
+  |
+2 | from sqlalchemy.orm import Session
+3 | from datetime import datetime, date
+4 | from typing import List
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+5 | from src.config.base_datos import get_db
+6 | from src.config.modelos_db import Reserva, EstadoReservaEnum, HistorialAtencion, Usuario, TipoEvento
+  |
+
+UP006 [*] Use `list` instead of `List` for type annotation
+  --> src/queue_atencion/rutas.py:17:44
+   |
+15 | rutas_atencion = APIRouter()
+16 |
+17 | @rutas_atencion.get("/hoy", response_model=List[ReservaRespuesta])
+   |                                            ^^^^
+18 | def reservas_de_hoy(id_tipo_evento: int = None, db: Session = Depends(get_db)):
+19 |     hoy = date.today()
+   |
+help: Replace with `list`
+   |
+16 |
+   - @rutas_atencion.get("/hoy", response_model=List[ReservaRespuesta])
+17 + @rutas_atencion.get("/hoy", response_model=list[ReservaRespuesta])
+18 | def reservas_de_hoy(id_tipo_evento: int = None, db: Session = Depends(get_db)):
+   |
+
+RUF013 PEP 484 prohibits implicit `Optional`
+  --> src/queue_atencion/rutas.py:18:37
+   |
+17 | @rutas_atencion.get("/hoy", response_model=List[ReservaRespuesta])
+18 | def reservas_de_hoy(id_tipo_evento: int = None, db: Session = Depends(get_db)):
+   |                                     ^^^
+19 |     hoy = date.today()
+20 |     query = db.query(Reserva).filter(
+   |
+help: Convert to `T | None`
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/queue_atencion/rutas.py:18:63
+   |
+17 | @rutas_atencion.get("/hoy", response_model=List[ReservaRespuesta])
+18 | def reservas_de_hoy(id_tipo_evento: int = None, db: Session = Depends(get_db)):
+   |                                                               ^^^^^^^^^^^^^^^
+19 |     hoy = date.today()
+20 |     query = db.query(Reserva).filter(
+   |
+
+DTZ011 `datetime.date.today()` used
+  --> src/queue_atencion/rutas.py:19:11
+   |
+17 | @rutas_atencion.get("/hoy", response_model=List[ReservaRespuesta])
+18 | def reservas_de_hoy(id_tipo_evento: int = None, db: Session = Depends(get_db)):
+19 |     hoy = date.today()
+   |           ^^^^^^^^^^^^
+20 |     query = db.query(Reserva).filter(
+21 |         Reserva.fecha_hora_reserva >= datetime.combine(hoy, datetime.min.time()),
+   |
+help: Use `datetime.datetime.now(tz=...).date()` instead
+
+UP006 [*] Use `list` instead of `List` for type annotation
+  --> src/queue_atencion/rutas.py:28:50
+   |
+26 |     return query.order_by(Reserva.id.asc()).all()
+27 |
+28 | @rutas_atencion.get("/por-fecha", response_model=List[ReservaRespuesta])
+   |                                                  ^^^^
+29 | def reservas_por_fecha(fecha: str, db: Session = Depends(get_db)):
+30 |     try:
+   |
+help: Replace with `list`
+   |
+27 |
+   - @rutas_atencion.get("/por-fecha", response_model=List[ReservaRespuesta])
+28 + @rutas_atencion.get("/por-fecha", response_model=list[ReservaRespuesta])
+29 | def reservas_por_fecha(fecha: str, db: Session = Depends(get_db)):
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/queue_atencion/rutas.py:29:50
+   |
+28 | @rutas_atencion.get("/por-fecha", response_model=List[ReservaRespuesta])
+29 | def reservas_por_fecha(fecha: str, db: Session = Depends(get_db)):
+   |                                                  ^^^^^^^^^^^^^^^
+30 |     try:
+31 |         dia = datetime.strptime(fecha, "%Y-%m-%d").date()
+   |
+
+DTZ007 Naive datetime constructed using `datetime.datetime.strptime()` without %z
+  --> src/queue_atencion/rutas.py:31:15
+   |
+29 | def reservas_por_fecha(fecha: str, db: Session = Depends(get_db)):
+30 |     try:
+31 |         dia = datetime.strptime(fecha, "%Y-%m-%d").date()
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+32 |     except ValueError:
+33 |         raise HTTPException(status_code=400, detail="Formato de fecha inválido. Usar YYYY-MM-DD")
+   |
+help: Call `.replace(tzinfo=<timezone>)` or `.astimezone()` to convert to an aware datetime
+
+UP006 [*] Use `list` instead of `List` for type annotation
+  --> src/queue_atencion/rutas.py:39:41
+   |
+37 |     ).order_by(Reserva.posicion_en_cola).all()
+38 |
+39 | @rutas_atencion.get("/", response_model=List[ReservaRespuesta])
+   |                                         ^^^^
+40 | def listar_reservas(db: Session = Depends(get_db)):
+41 |     return db.query(Reserva).all()
+   |
+help: Replace with `list`
+   |
+38 |
+   - @rutas_atencion.get("/", response_model=List[ReservaRespuesta])
+39 + @rutas_atencion.get("/", response_model=list[ReservaRespuesta])
+40 | def listar_reservas(db: Session = Depends(get_db)):
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/queue_atencion/rutas.py:40:35
+   |
+39 | @rutas_atencion.get("/", response_model=List[ReservaRespuesta])
+40 | def listar_reservas(db: Session = Depends(get_db)):
+   |                                   ^^^^^^^^^^^^^^^
+41 |     return db.query(Reserva).all()
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/queue_atencion/rutas.py:44:56
+   |
+43 | @rutas_atencion.post("/", response_model=ReservaRespuesta, status_code=201)
+44 | def crear_reserva(reserva: ReservaCrear, db: Session = Depends(get_db)):
+   |                                                        ^^^^^^^^^^^^^^^
+45 |     import os
+46 |     from zoneinfo import ZoneInfo
+   |
+
+PLW1508 Invalid type for environment variable default; expected `str` or `None`
+  --> src/queue_atencion/rutas.py:50:54
+   |
+48 |     hora_local = ahora_ba.hour
+49 |     dia_semana = ahora_ba.weekday()  # 0=lunes, 6=domingo
+50 |     horario_inicio = int(os.getenv("HORARIO_INICIO", 9))
+   |                                                      ^
+51 |     horario_fin    = int(os.getenv("HORARIO_FIN", 23))
+52 |     if dia_semana >= 5:
+   |
+
+PLW1508 Invalid type for environment variable default; expected `str` or `None`
+  --> src/queue_atencion/rutas.py:51:51
+   |
+49 |     dia_semana = ahora_ba.weekday()  # 0=lunes, 6=domingo
+50 |     horario_inicio = int(os.getenv("HORARIO_INICIO", 9))
+51 |     horario_fin    = int(os.getenv("HORARIO_FIN", 23))
+   |                                                   ^^
+52 |     if dia_semana >= 5:
+53 |         raise HTTPException(status_code=400, detail="El servicio no está disponible los fines de semana")
+   |
+
+BLE001 Do not catch blind exception: `Exception`
+  --> src/queue_atencion/rutas.py:87:12
+   |
+85 |                 local_lng        = float(db_reserva.ubicacion_lng or -58.4),
+86 |             )
+87 |     except Exception as e:
+   |            ^^^^^^^^^
+88 |         print(f"[WHATSAPP] No se pudo enviar notificacion: {e}")
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/queue_atencion/rutas.py:93:52
+   |
+92 | @rutas_atencion.get("/{reserva_id}", response_model=ReservaRespuesta)
+93 | def obtener_reserva(reserva_id: int, db: Session = Depends(get_db)):
+   |                                                    ^^^^^^^^^^^^^^^
+94 |     reserva = db.query(Reserva).filter(Reserva.id == reserva_id).first()
+95 |     if not reserva:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+   --> src/queue_atencion/rutas.py:100:44
+    |
+ 99 | @rutas_atencion.post("/{reserva_id}/checkin")
+100 | def checkin(reserva_id: int, db: Session = Depends(get_db)):
+    |                                            ^^^^^^^^^^^^^^^
+101 |     reserva = db.query(Reserva).filter(Reserva.id == reserva_id).first()
+102 |     if not reserva:
+    |
+
+DTZ003 `datetime.datetime.utcnow()` used
+   --> src/queue_atencion/rutas.py:105:34
+    |
+103 |         raise HTTPException(status_code=404, detail="Reserva no encontrada")
+104 |     reserva.estado             = EstadoReservaEnum.EN_CURSO
+105 |     reserva.fecha_hora_checkin = datetime.utcnow()
+    |                                  ^^^^^^^^^^^^^^^^^
+106 |     db.commit()
+107 |     return {"mensaje": "Check-in registrado", "hora": reserva.fecha_hora_checkin}
+    |
+help: Use `datetime.datetime.now(tz=...)` instead
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+   --> src/queue_atencion/rutas.py:110:45
+    |
+109 | @rutas_atencion.post("/{reserva_id}/checkout")
+110 | def checkout(reserva_id: int, db: Session = Depends(get_db)):
+    |                                             ^^^^^^^^^^^^^^^
+111 |     reserva = db.query(Reserva).filter(Reserva.id == reserva_id).first()
+112 |     if not reserva:
+    |
+
+DTZ003 `datetime.datetime.utcnow()` used
+   --> src/queue_atencion/rutas.py:116:35
+    |
+114 |     if not reserva.fecha_hora_checkin:
+115 |         raise HTTPException(status_code=400, detail="No se hizo check-in todavía")
+116 |     reserva.fecha_hora_checkout = datetime.utcnow()
+    |                                   ^^^^^^^^^^^^^^^^^
+117 |     duracion = int((reserva.fecha_hora_checkout - reserva.fecha_hora_checkin).total_seconds() / 60)
+118 |     reserva.duracion_real_min   = duracion
+    |
+help: Use `datetime.datetime.now(tz=...)` instead
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+   --> src/queue_atencion/rutas.py:136:53
+    |
+135 | @rutas_atencion.patch("/{reserva_id}/cancelar")
+136 | def cancelar_reserva(reserva_id: int, db: Session = Depends(get_db)):
+    |                                                     ^^^^^^^^^^^^^^^
+137 |     reserva = db.query(Reserva).filter(Reserva.id == reserva_id).first()
+138 |     if not reserva:
+    |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+   --> src/queue_atencion/rutas.py:145:51
+    |
+144 | @rutas_atencion.patch("/{reserva_id}/mover-al-final")
+145 | def mover_al_final(reserva_id: int, db: Session = Depends(get_db)):
+    |                                                   ^^^^^^^^^^^^^^^
+146 |     reserva = db.query(Reserva).filter(Reserva.id == reserva_id).first()
+147 |     if not reserva:
+    |
+
+UP006 [*] Use `list` instead of `List` for type annotation
+   --> src/queue_atencion/rutas.py:164:66
+    |
+162 |     }
+163 |
+164 | @rutas_atencion.get("/mis-reservas/{id_usuario}", response_model=List[ReservaRespuesta])
+    |                                                                  ^^^^
+165 | def mis_reservas(id_usuario: int, db: Session = Depends(get_db)):
+166 |     return db.query(Reserva).filter(
+    |
+help: Replace with `list`
+    |
+163 |
+    - @rutas_atencion.get("/mis-reservas/{id_usuario}", response_model=List[ReservaRespuesta])
+164 + @rutas_atencion.get("/mis-reservas/{id_usuario}", response_model=list[ReservaRespuesta])
+165 | def mis_reservas(id_usuario: int, db: Session = Depends(get_db)):
+    |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+   --> src/queue_atencion/rutas.py:165:49
+    |
+164 | @rutas_atencion.get("/mis-reservas/{id_usuario}", response_model=List[ReservaRespuesta])
+165 | def mis_reservas(id_usuario: int, db: Session = Depends(get_db)):
+    |                                                 ^^^^^^^^^^^^^^^
+166 |     return db.query(Reserva).filter(
+167 |         Reserva.id_usuario == id_usuario
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/servicios/modelo.py:1:1
+  |
+1 | / from pydantic import BaseModel
+2 | | from typing import Optional
+3 | | from datetime import datetime
+  | |_____________________________^
+4 |
+5 |   class TipoEventoCrear(BaseModel):
+  |
+help: Organize imports
+  |
+1 + from datetime import datetime
+2 + from typing import Optional
+3 +
+4 | from pydantic import BaseModel
+  - from typing import Optional
+  - from datetime import datetime
+5 |
+6 +
+7 | class TipoEventoCrear(BaseModel):
+  |
+
+UP045 [*] Use `X | None` for type annotations
+ --> src/servicios/modelo.py:7:22
+  |
+5 | class TipoEventoCrear(BaseModel):
+6 |     nombre:          str
+7 |     descripcion:     Optional[str] = None
+  |                      ^^^^^^^^^^^^^
+8 |     tiempo_base_min: int
+9 |     requisitos:      Optional[str] = None
+  |
+help: Convert to `X | None`
+  |
+6 |     nombre:          str
+  -     descripcion:     Optional[str] = None
+7 +     descripcion:     str | None = None
+8 |     tiempo_base_min: int
+  |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/servicios/modelo.py:9:22
+   |
+ 7 |     descripcion:     Optional[str] = None
+ 8 |     tiempo_base_min: int
+ 9 |     requisitos:      Optional[str] = None
+   |                      ^^^^^^^^^^^^^
+10 |     activo:          bool = True
+   |
+help: Convert to `X | None`
+   |
+8  |     tiempo_base_min: int
+   -     requisitos:      Optional[str] = None
+9  +     requisitos:      str | None = None
+10 |     activo:          bool = True
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/servicios/modelo.py:15:22
+   |
+13 |     id:              int
+14 |     nombre:          str
+15 |     descripcion:     Optional[str] = None
+   |                      ^^^^^^^^^^^^^
+16 |     tiempo_base_min: int
+17 |     requisitos:      Optional[str] = None
+   |
+help: Convert to `X | None`
+   |
+14 |     nombre:          str
+   -     descripcion:     Optional[str] = None
+15 +     descripcion:     str | None = None
+16 |     tiempo_base_min: int
+   |
+
+UP045 [*] Use `X | None` for type annotations
+  --> src/servicios/modelo.py:17:22
+   |
+15 |     descripcion:     Optional[str] = None
+16 |     tiempo_base_min: int
+17 |     requisitos:      Optional[str] = None
+   |                      ^^^^^^^^^^^^^
+18 |     activo:          bool
+19 |     fecha_alta:      datetime
+   |
+help: Convert to `X | None`
+   |
+16 |     tiempo_base_min: int
+   -     requisitos:      Optional[str] = None
+17 +     requisitos:      str | None = None
+18 |     activo:          bool
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/servicios/rutas.py:1:1
+  |
+1 | / from fastapi import APIRouter, Depends, HTTPException
+2 | | from sqlalchemy.orm import Session
+3 | | from src.config.base_datos import get_db
+4 | | from src.config.modelos_db import TipoEvento
+5 | | from src.servicios.modelo import TipoEventoCrear, TipoEventoRespuesta
+6 | | from typing import List
+  | |_______________________^
+7 |
+8 |   rutas_servicios = APIRouter()
+  |
+help: Organize imports
+  |
+1 + from typing import List
+2 +
+3 | from fastapi import APIRouter, Depends, HTTPException
+4 | from sqlalchemy.orm import Session
+5 +
+6 | from src.config.base_datos import get_db
+7 | from src.config.modelos_db import TipoEvento
+8 | from src.servicios.modelo import TipoEventoCrear, TipoEventoRespuesta
+  - from typing import List
+9 |
+  |
+
+UP035 `typing.List` is deprecated, use `list` instead
+ --> src/servicios/rutas.py:6:1
+  |
+4 | from src.config.modelos_db import TipoEvento
+5 | from src.servicios.modelo import TipoEventoCrear, TipoEventoRespuesta
+6 | from typing import List
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+7 |
+8 | rutas_servicios = APIRouter()
+  |
+
+UP006 [*] Use `list` instead of `List` for type annotation
+  --> src/servicios/rutas.py:10:42
+   |
+ 8 | rutas_servicios = APIRouter()
+ 9 |
+10 | @rutas_servicios.get("/", response_model=List[TipoEventoRespuesta])
+   |                                          ^^^^
+11 | def listar_tipo_eventos(db: Session = Depends(get_db)):
+12 |     return db.query(TipoEvento).filter(TipoEvento.activo == True).all()
+   |
+help: Replace with `list`
+   |
+9  |
+   - @rutas_servicios.get("/", response_model=List[TipoEventoRespuesta])
+10 + @rutas_servicios.get("/", response_model=list[TipoEventoRespuesta])
+11 | def listar_tipo_eventos(db: Session = Depends(get_db)):
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/servicios/rutas.py:11:39
+   |
+10 | @rutas_servicios.get("/", response_model=List[TipoEventoRespuesta])
+11 | def listar_tipo_eventos(db: Session = Depends(get_db)):
+   |                                       ^^^^^^^^^^^^^^^
+12 |     return db.query(TipoEvento).filter(TipoEvento.activo == True).all()
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/servicios/rutas.py:15:62
+   |
+14 | @rutas_servicios.post("/", response_model=TipoEventoRespuesta, status_code=201)
+15 | def crear_tipo_evento(evento: TipoEventoCrear, db: Session = Depends(get_db)):
+   |                                                              ^^^^^^^^^^^^^^^
+16 |     db_evento = TipoEvento(**evento.model_dump())
+17 |     db.add(db_evento)
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/servicios/rutas.py:23:55
+   |
+22 | @rutas_servicios.get("/{evento_id}", response_model=TipoEventoRespuesta)
+23 | def obtener_tipo_evento(evento_id: int, db: Session = Depends(get_db)):
+   |                                                       ^^^^^^^^^^^^^^^
+24 |     evento = db.query(TipoEvento).filter(TipoEvento.id == evento_id).first()
+25 |     if not evento:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/servicios/rutas.py:30:82
+   |
+29 | @rutas_servicios.put("/{evento_id}", response_model=TipoEventoRespuesta)
+30 | def actualizar_tipo_evento(evento_id: int, datos: TipoEventoCrear, db: Session = Depends(get_db)):
+   |                                                                                  ^^^^^^^^^^^^^^^
+31 |     evento = db.query(TipoEvento).filter(TipoEvento.id == evento_id).first()
+32 |     if not evento:
+   |
+
+B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+  --> src/servicios/rutas.py:41:56
+   |
+40 | @rutas_servicios.delete("/{evento_id}")
+41 | def eliminar_tipo_evento(evento_id: int, db: Session = Depends(get_db)):
+   |                                                        ^^^^^^^^^^^^^^^
+42 |     evento = db.query(TipoEvento).filter(TipoEvento.id == evento_id).first()
+43 |     if not evento:
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/tests/test_auth.py:1:1
+  |
+1 | / from fastapi.testclient import TestClient
+2 | | from main import app
+  | |____________________^
+3 |
+4 |   client = TestClient(app)
+  |
+help: Organize imports
+  |
+1 | from fastapi.testclient import TestClient
+2 +
+3 | from main import app
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/tests/test_empleados.py:1:1
+  |
+1 | / import time
+2 | | from fastapi.testclient import TestClient
+3 | | from main import app
+  | |____________________^
+4 |
+5 |   client = TestClient(app)
+  |
+help: Organize imports
+  |
+1 | import time
+2 +
+3 | from fastapi.testclient import TestClient
+4 +
+5 | from main import app
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/tests/test_reservas.py:1:1
+  |
+1 | / from fastapi.testclient import TestClient
+2 | | from main import app
+  | |____________________^
+3 |
+4 |   client = TestClient(app)
+  |
+help: Organize imports
+  |
+1 | from fastapi.testclient import TestClient
+2 +
+3 | from main import app
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/tests/test_servicios.py:1:1
+  |
+1 | / from fastapi.testclient import TestClient
+2 | | from main import app
+  | |____________________^
+3 |
+4 |   client = TestClient(app)
+  |
+help: Organize imports
+  |
+1 | from fastapi.testclient import TestClient
+2 +
+3 | from main import app
+  |
+
+Found 119 errors.
+[*] 63 fixable with the `--fix` option (3 hidden fixes can be enabled with the `--unsafe-fixes` option).

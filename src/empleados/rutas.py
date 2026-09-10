@@ -1,9 +1,10 @@
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from src.config.base_datos import get_db
 from src.config.modelos_db import Empleado
 from src.empleados.modelo import EmpleadoCrear, EmpleadoRespuesta
-from typing import List
 
 rutas_empleados = APIRouter()
 
@@ -12,7 +13,7 @@ def generar_legajo(db: Session) -> str:
     numero = (ultimo.id + 1) if ultimo else 1
     return f"EMP-{numero:04d}"
 
-@rutas_empleados.get("/", response_model=List[EmpleadoRespuesta])
+@rutas_empleados.get("/", response_model=list[EmpleadoRespuesta])
 def listar_empleados(db: Session = Depends(get_db)):
     return db.query(Empleado).filter(Empleado.activo == True).all()
 

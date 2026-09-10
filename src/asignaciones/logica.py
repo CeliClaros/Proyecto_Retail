@@ -1,6 +1,9 @@
+from datetime import date, datetime
+
 from sqlalchemy.orm import Session
-from datetime import datetime, date
-from src.config.modelos_db import AsignacionDiaria, PerformanceEmpleado, Empleado
+
+from src.config.modelos_db import AsignacionDiaria, Empleado, PerformanceEmpleado
+
 
 def obtener_asignacion_activa(
     db: Session,

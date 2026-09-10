@@ -1,12 +1,13 @@
-from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
+
+from pydantic import BaseModel
+
 
 class EmpleadoCrear(BaseModel):
     nombre:   str
     apellido: str
     email:    str
-    telefono: Optional[str] = None
+    telefono: str | None = None
     activo:   bool = True
 
 class EmpleadoRespuesta(BaseModel):
@@ -15,7 +16,7 @@ class EmpleadoRespuesta(BaseModel):
     nombre:     str
     apellido:   str
     email:      str
-    telefono:   Optional[str] = None
+    telefono:   str | None = None
     activo:     bool
     fecha_alta: datetime
 

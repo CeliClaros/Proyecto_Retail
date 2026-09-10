@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
-from src.config.modelos_db import Reserva, PerformanceEmpleado, EstadoReservaEnum
+
+from src.config.modelos_db import EstadoReservaEnum, PerformanceEmpleado, Reserva
+
 
 def calcular_tiempo_espera(
     db: Session,

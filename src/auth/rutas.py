@@ -1,10 +1,11 @@
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+from src.auth.modelo import LoginRequest, UsuarioCrear, UsuarioRespuesta
+from src.auth.seguridad import crear_token, hashear_password, verificar_password
 from src.config.base_datos import get_db
 from src.config.modelos_db import Usuario
-from src.auth.modelo import UsuarioCrear, UsuarioRespuesta, LoginRequest
-from src.auth.seguridad import hashear_password, verificar_password, crear_token
-from typing import List
 
 rutas_auth = APIRouter()
 
@@ -41,6 +42,6 @@ def login(datos: LoginRequest, db: Session = Depends(get_db)):
         "id":           usuario.id
     }
 
-@rutas_auth.get("/usuarios", response_model=List[UsuarioRespuesta])
+@rutas_auth.get("/usuarios", response_model=list[UsuarioRespuesta])
 def listar_usuarios(db: Session = Depends(get_db)):
     return db.query(Usuario).filter(Usuario.activo == True).all()

@@ -1,0 +1,283 @@
+Run started:2026-09-08 22:40:01.391979+00:00
+
+Test results:
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'bearer'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: src/auth/rutas.py:39:8
+38	        "access_token": token,
+39	        "token_type":   "bearer",
+40	        "rol":          rol_str,
+41	        "nombre":       usuario.nombre,
+42	        "id":           usuario.id
+43	    }
+44	
+45	@rutas_auth.get("/usuarios", response_model=list[UsuarioRespuesta])
+46	def listar_usuarios(db: Session = Depends(get_db)):
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b113_request_without_timeout.html
+   Location: src/notificaciones/maps.py:22:19
+21	    try:
+22	        response = requests.get(url, params=params)
+23	        data = response.json()
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'test1234'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: src/tests/test_auth.py:12:8
+11	        "email":    "test.auth@retail.com",
+12	        "password": "test1234",
+13	        "rol":      "cliente"
+14	    })
+15	    assert response.status_code in [201, 400]
+16	
+17	def test_login_correcto():
+18	    response = client.post("/api/auth/login", json={
+19	        "email":    "admin@retail.com",
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_auth.py:15:4
+14	    })
+15	    assert response.status_code in [201, 400]
+16	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'admin1234'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: src/tests/test_auth.py:20:8
+19	        "email":    "admin@retail.com",
+20	        "password": "admin1234"
+21	    })
+22	    assert response.status_code == 200
+23	    assert "access_token" in response.json()
+24	    assert response.json()["rol"] == "admin"
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_auth.py:22:4
+21	    })
+22	    assert response.status_code == 200
+23	    assert "access_token" in response.json()
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_auth.py:23:4
+22	    assert response.status_code == 200
+23	    assert "access_token" in response.json()
+24	    assert response.json()["rol"] == "admin"
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_auth.py:24:4
+23	    assert "access_token" in response.json()
+24	    assert response.json()["rol"] == "admin"
+25	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'wrongpassword'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: src/tests/test_auth.py:29:8
+28	        "email":    "admin@retail.com",
+29	        "password": "wrongpassword"
+30	    })
+31	    assert response.status_code == 401
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_auth.py:31:4
+30	    })
+31	    assert response.status_code == 401
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_empleados.py:11:4
+10	    response = client.get("/api/empleados/")
+11	    assert response.status_code == 200
+12	    assert isinstance(response.json(), list)
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_empleados.py:12:4
+11	    assert response.status_code == 200
+12	    assert isinstance(response.json(), list)
+13	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_empleados.py:23:4
+22	    })
+23	    assert response.status_code == 201
+24	    assert response.json()["nombre"] == "Juan"
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_empleados.py:24:4
+23	    assert response.status_code == 201
+24	    assert response.json()["nombre"] == "Juan"
+25	    assert "legajo" in response.json()
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_empleados.py:25:4
+24	    assert response.json()["nombre"] == "Juan"
+25	    assert "legajo" in response.json()
+26	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_empleados.py:29:4
+28	    response = client.get("/api/empleados/1")
+29	    assert response.status_code == 200
+30	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_empleados.py:33:4
+32	    response = client.get("/api/empleados/9999")
+33	    assert response.status_code == 404
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_reservas.py:9:4
+8	    response = client.get("/api/reservas/")
+9	    assert response.status_code == 200
+10	    assert isinstance(response.json(), list)
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_reservas.py:10:4
+9	    assert response.status_code == 200
+10	    assert isinstance(response.json(), list)
+11	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_reservas.py:14:4
+13	    response = client.get("/api/reservas/9999")
+14	    assert response.status_code == 404
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_servicios.py:9:4
+8	    response = client.get("/api/tipo-eventos/")
+9	    assert response.status_code == 200
+10	    assert isinstance(response.json(), list)
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_servicios.py:10:4
+9	    assert response.status_code == 200
+10	    assert isinstance(response.json(), list)
+11	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_servicios.py:20:4
+19	    })
+20	    assert response.status_code == 201
+21	    assert response.json()["nombre"] == "Apertura de cuenta"
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_servicios.py:21:4
+20	    assert response.status_code == 201
+21	    assert response.json()["nombre"] == "Apertura de cuenta"
+22	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html
+   Location: src/tests/test_servicios.py:25:4
+24	    response = client.get("/api/tipo-eventos/9999")
+25	    assert response.status_code == 404
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 1231
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 24
+		Medium: 1
+		High: 0
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 1
+		Medium: 4
+		High: 20
+Files skipped (0):

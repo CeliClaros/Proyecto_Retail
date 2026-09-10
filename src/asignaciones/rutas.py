@@ -1,15 +1,24 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from datetime import datetime
-from typing import List
+
+from src.asignaciones.logica import (
+    obtener_asignacion_activa,
+    obtener_ranking_empleados,
+    sugerir_rotacion,
+)
+from src.asignaciones.modelo import (
+    AsignacionCrear,
+    AsignacionRespuesta,
+    AsignacionTransferir,
+)
 from src.config.base_datos import get_db
 from src.config.modelos_db import AsignacionDiaria, Empleado, TipoEvento, Usuario
-from src.asignaciones.modelo import AsignacionCrear, AsignacionRespuesta, AsignacionTransferir
-from src.asignaciones.logica import obtener_asignacion_activa, obtener_ranking_empleados, sugerir_rotacion
 
 rutas_asignaciones = APIRouter()
 
-@rutas_asignaciones.get("/", response_model=List[AsignacionRespuesta])
+@rutas_asignaciones.get("/", response_model=list[AsignacionRespuesta])
 def listar_asignaciones(db: Session = Depends(get_db)):
     return db.query(AsignacionDiaria).filter(AsignacionDiaria.activo == True).all()
 

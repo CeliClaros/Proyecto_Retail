@@ -19,6 +19,7 @@ export default function PortalCliente({ onLogout }) {
   const [loadingReserva, setLoadingReserva] = useState(false)
   const [idTipoEvento, setIdTipoEvento]     = useState("")
   const [errorForm, setErrorForm]           = useState("")
+  const [ultimaReserva, setUltimaReserva]   = useState(null)
   const [paginaHistorial, setPaginaHistorial] = useState(1)
 
   const nombre    = localStorage.getItem("nombre")
@@ -69,7 +70,10 @@ export default function PortalCliente({ onLogout }) {
       })
       const pos = r.data.posicion_en_cola || 1
       const eta = r.data.tiempo_espera_estimado_min || 0
-      setMensaje(`✅ ¡Reserva confirmada! Estás en la posición #${pos}. Tiempo de espera estimado: ${eta} minutos. Te avisamos por WhatsApp cuando tengas que salir.`)
+      const lat = r.data.ubicacion_lat || -34.6
+      const lng = r.data.ubicacion_lng || -58.4
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+      setMensaje(`✅ ¡Reserva confirmada! Estás en la posición #${pos}. Tiempo de espera estimado: ${eta} minutos. Te avisamos por WhatsApp cuando tengas que salir. 📍 Ver ruta al local: ${mapsUrl}`)
       setMostrarForm(false)
       setTab("activos")
       cargarReservas()
@@ -181,6 +185,32 @@ export default function PortalCliente({ onLogout }) {
             )}
           </button>
         </div>
+
+        {/* Card confirmación de reserva */}
+        {ultimaReserva && (
+          <div className="mb-4 bg-green-50 border border-green-200 rounded-xl p-5">
+            <div className="flex justify-between items-start mb-3">
+              <h3 className="font-semibold text-green-800 text-lg">✅ ¡Reserva confirmada!</h3>
+              <button onClick={() => setUltimaReserva(null)} className="text-green-400 hover:text-green-600 text-xl">×</button>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-white rounded-lg p-3 text-center border border-green-100">
+                <p className="text-xs text-gray-500 mb-1">Tu posición en la fila</p>
+                <p className="text-3xl font-bold text-green-700">#{ultimaReserva.pos}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 text-center border border-green-100">
+                <p className="text-xs text-gray-500 mb-1">Tiempo de espera estimado</p>
+                <p className="text-3xl font-bold text-blue-700">{ultimaReserva.eta} min</p>
+              </div>
+            </div>
+            <p className="text-sm text-green-700 mb-3">📱 Te enviamos un WhatsApp con estos datos y la ruta al local.</p>
+            <a href={`https://www.google.com/maps/dir/?api=1&destination=${ultimaReserva.lat},${ultimaReserva.lng}`}
+              target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition w-full">
+              📍 Ver ruta al local en Google Maps
+            </a>
+          </div>
+        )}
 
         {/* TAB: TURNOS ACTIVOS */}
         {tab === "activos" && (

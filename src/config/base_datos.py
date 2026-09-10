@@ -1,4 +1,5 @@
 import os
+
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -23,9 +24,4 @@ def get_db():
         db.close()
 
 def crear_tablas():
-    from src.config.modelos_db import (
-        Usuario, Empleado, TipoEvento,
-        AsignacionDiaria, Reserva,
-        HistorialAtencion, PerformanceEmpleado
-    )
     Base.metadata.create_all(bind=engine)

@@ -1,0 +1,366 @@
+[1msrc/__init__.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mW391[m blank line at end of file
+[1msrc/asignaciones/logica.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/logica.py[m[36m:[m22[36m:[m33[36m:[m [1m[31mE712[m comparison to True should be 'if cond is True:' or 'if cond:'
+[1msrc/asignaciones/logica.py[m[36m:[m24[36m:[m33[36m:[m [1m[31mE222[m multiple spaces after operator
+[1msrc/asignaciones/modelo.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/modelo.py[m[36m:[m12[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/modelo.py[m[36m:[m24[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m12[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m14[36m:[m70[36m:[m [1m[31mE712[m comparison to True should be 'if cond is True:' or 'if cond:'
+[1msrc/asignaciones/rutas.py[m[36m:[m16[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m25[36m:[m20[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m25[36m:[m20[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m25[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m26[36m:[m23[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m26[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m27[36m:[m14[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m27[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m27[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m28[36m:[m20[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m28[36m:[m20[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m28[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m29[36m:[m17[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m29[36m:[m17[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m29[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m30[36m:[m15[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m30[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m30[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m37[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m51[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m60[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m71[36m:[m20[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m71[36m:[m20[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m71[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m72[36m:[m23[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m72[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m73[36m:[m14[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m73[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m73[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m74[36m:[m20[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m74[36m:[m20[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m74[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m75[36m:[m17[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m75[36m:[m17[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m75[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m75[36m:[m40[36m:[m [1m[31mE272[m multiple spaces before keyword
+[1msrc/asignaciones/rutas.py[m[36m:[m76[36m:[m15[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m76[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m76[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/asignaciones/rutas.py[m[36m:[m81[36m:[m121[36m:[m [1m[31mE501[m line too long (134 > 120 characters)
+[1msrc/asignaciones/rutas.py[m[36m:[m83[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m91[36m:[m37[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m92[36m:[m32[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m92[36m:[m41[36m:[m [1m[31mE712[m comparison to True should be 'if cond is True:' or 'if cond:'
+[1msrc/asignaciones/rutas.py[m[36m:[m93[36m:[m31[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m94[36m:[m31[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m94[36m:[m42[36m:[m [1m[31mE222[m multiple spaces after operator
+[1msrc/asignaciones/rutas.py[m[36m:[m100[36m:[m36[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/asignaciones/rutas.py[m[36m:[m100[36m:[m42[36m:[m [1m[31mE712[m comparison to True should be 'if cond is True:' or 'if cond:'
+[1msrc/asignaciones/rutas.py[m[36m:[m125[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m132[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/asignaciones/rutas.py[m[36m:[m135[36m:[m59[36m:[m [1m[31mE712[m comparison to True should be 'if cond is True:' or 'if cond:'
+[1msrc/auth/modelo.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/modelo.py[m[36m:[m6[36m:[m12[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/auth/modelo.py[m[36m:[m7[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/auth/modelo.py[m[36m:[m8[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/auth/modelo.py[m[36m:[m11[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/modelo.py[m[36m:[m19[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/modelo.py[m[36m:[m31[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/modelo.py[m[36m:[m35[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/rutas.py[m[36m:[m11[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/rutas.py[m[36m:[m17[36m:[m15[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m17[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/auth/rutas.py[m[36m:[m17[36m:[m19[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m18[36m:[m17[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m18[36m:[m19[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m19[36m:[m14[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m19[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/auth/rutas.py[m[36m:[m19[36m:[m19[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m20[36m:[m17[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m20[36m:[m19[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m21[36m:[m17[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m21[36m:[m19[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m22[36m:[m12[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m22[36m:[m12[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/auth/rutas.py[m[36m:[m22[36m:[m19[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/auth/rutas.py[m[36m:[m29[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/rutas.py[m[36m:[m44[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/rutas.py[m[36m:[m46[36m:[m52[36m:[m [1m[31mE712[m comparison to True should be 'if cond is True:' or 'if cond:'
+[1msrc/auth/seguridad.py[m[36m:[m13[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/seguridad.py[m[36m:[m16[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/seguridad.py[m[36m:[m19[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/auth/seguridad.py[m[36m:[m25[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/__init__.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mW391[m blank line at end of file
+[1msrc/config/base_datos.py[m[36m:[m18[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/base_datos.py[m[36m:[m25[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/base_datos.py[m[36m:[m26[36m:[m5[36m:[m [1m[31mF401[m 'src.config.modelos_db.Usuario' imported but unused
+[1msrc/config/base_datos.py[m[36m:[m26[36m:[m5[36m:[m [1m[31mF401[m 'src.config.modelos_db.Empleado' imported but unused
+[1msrc/config/base_datos.py[m[36m:[m26[36m:[m5[36m:[m [1m[31mF401[m 'src.config.modelos_db.TipoEvento' imported but unused
+[1msrc/config/base_datos.py[m[36m:[m26[36m:[m5[36m:[m [1m[31mF401[m 'src.config.modelos_db.AsignacionDiaria' imported but unused
+[1msrc/config/base_datos.py[m[36m:[m26[36m:[m5[36m:[m [1m[31mF401[m 'src.config.modelos_db.Reserva' imported but unused
+[1msrc/config/base_datos.py[m[36m:[m26[36m:[m5[36m:[m [1m[31mF401[m 'src.config.modelos_db.HistorialAtencion' imported but unused
+[1msrc/config/base_datos.py[m[36m:[m26[36m:[m5[36m:[m [1m[31mF401[m 'src.config.modelos_db.PerformanceEmpleado' imported but unused
+[1msrc/config/modelos_db.py[m[36m:[m7[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m8[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m10[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m11[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m12[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m13[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m15[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m17[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m18[36m:[m8[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m20[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m21[36m:[m12[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m22[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m23[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m26[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m28[36m:[m7[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m29[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m30[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m31[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m32[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m33[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m34[36m:[m8[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m35[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m36[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m37[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m38[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m40[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m42[36m:[m7[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m43[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m44[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m45[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m46[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m47[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m48[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m49[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m51[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m52[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m53[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m55[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m57[36m:[m7[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m58[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m59[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m60[36m:[m20[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m61[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m62[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m63[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m64[36m:[m17[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m65[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m66[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m67[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m69[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m71[36m:[m7[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m72[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m74[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m75[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m76[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m77[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m78[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m79[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m80[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m82[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m84[36m:[m7[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m85[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m86[36m:[m19[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m87[36m:[m25[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m88[36m:[m18[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m89[36m:[m23[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m90[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m90[36m:[m121[36m:[m [1m[31mE501[m line too long (148 > 120 characters)
+[1msrc/config/modelos_db.py[m[36m:[m92[36m:[m21[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m93[36m:[m23[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m94[36m:[m24[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m95[36m:[m22[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m96[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m96[36m:[m121[36m:[m [1m[31mE501[m line too long (138 > 120 characters)
+[1msrc/config/modelos_db.py[m[36m:[m97[36m:[m25[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m98[36m:[m18[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m99[36m:[m18[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m100[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m101[36m:[m12[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m102[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m103[36m:[m22[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m104[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m105[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m107[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m109[36m:[m7[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m110[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m111[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m112[36m:[m19[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m114[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m115[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m116[36m:[m12[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m117[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m118[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m120[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/modelos_db.py[m[36m:[m122[36m:[m7[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m123[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m124[36m:[m19[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m126[36m:[m21[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m127[36m:[m25[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m128[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m129[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m134[36m:[m7[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m135[36m:[m10[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m136[36m:[m11[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m137[36m:[m15[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/modelos_db.py[m[36m:[m138[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/scheduler.py[m[36m:[m7[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/config/scheduler.py[m[36m:[m25[36m:[m23[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/config/scheduler.py[m[36m:[m25[36m:[m23[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/scheduler.py[m[36m:[m25[36m:[m38[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/config/scheduler.py[m[36m:[m26[36m:[m27[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/config/scheduler.py[m[36m:[m26[36m:[m27[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/scheduler.py[m[36m:[m26[36m:[m38[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/config/scheduler.py[m[36m:[m27[36m:[m28[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/config/scheduler.py[m[36m:[m27[36m:[m28[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/config/scheduler.py[m[36m:[m27[36m:[m38[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/config/scheduler.py[m[36m:[m27[36m:[m121[36m:[m [1m[31mE501[m line too long (130 > 120 characters)
+[1msrc/config/scheduler.py[m[36m:[m28[36m:[m36[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/config/scheduler.py[m[36m:[m28[36m:[m38[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/config/scheduler.py[m[36m:[m41[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/empleados/__init__.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mW391[m blank line at end of file
+[1msrc/empleados/modelo.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/empleados/modelo.py[m[36m:[m12[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/empleados/rutas.py[m[36m:[m10[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/empleados/rutas.py[m[36m:[m15[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/empleados/rutas.py[m[36m:[m17[36m:[m54[36m:[m [1m[31mE712[m comparison to True should be 'if cond is True:' or 'if cond:'
+[1msrc/empleados/rutas.py[m[36m:[m19[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/empleados/rutas.py[m[36m:[m29[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/empleados/rutas.py[m[36m:[m36[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/empleados/rutas.py[m[36m:[m47[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/main.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mF403[m 'from src.notificaciones.envio import *' used; unable to detect undefined names
+[1msrc/main.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mF401[m 'src.notificaciones.envio.*' imported but unused
+[1msrc/main.py[m[36m:[m15[36m:[m89[36m:[m [1m[31mE261[m at least two spaces before inline comment
+[1msrc/main.py[m[36m:[m17[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/__init__.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mW391[m blank line at end of file
+[1msrc/notificaciones/envio.py[m[36m:[m8[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/envio.py[m[36m:[m14[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/envio.py[m[36m:[m28[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/envio.py[m[36m:[m46[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1msrc/notificaciones/envio.py[m[36m:[m68[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/envio.py[m[36m:[m82[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1msrc/notificaciones/envio.py[m[36m:[m100[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/envio.py[m[36m:[m104[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/envio.py[m[36m:[m112[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/maps.py[m[36m:[m4[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/notificaciones/maps.py[m[36m:[m32[36m:[m121[36m:[m [1m[31mE501[m line too long (142 > 120 characters)
+[1msrc/notificaciones/maps.py[m[36m:[m37[36m:[m5[36m:[m [1m[31mF841[m local variable 'e' is assigned to but never used
+[1msrc/notificaciones/maps.py[m[36m:[m52[36m:[m121[36m:[m [1m[31mE501[m line too long (134 > 120 characters)
+[1msrc/notificaciones/maps.py[m[36m:[m65[36m:[m121[36m:[m [1m[31mE501[m line too long (133 > 120 characters)
+[1msrc/queue_atencion/__init__.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mW391[m blank line at end of file
+[1msrc/queue_atencion/logica.py[m[36m:[m4[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/logica.py[m[36m:[m15[36m:[m40[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/logica.py[m[36m:[m45[36m:[m35[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/logica.py[m[36m:[m45[36m:[m39[36m:[m [1m[31mE222[m multiple spaces after operator
+[1msrc/queue_atencion/logica.py[m[36m:[m65[36m:[m40[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/logica.py[m[36m:[m75[36m:[m37[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/logica.py[m[36m:[m76[36m:[m41[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/logica.py[m[36m:[m79[36m:[m24[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/logica.py[m[36m:[m79[36m:[m24[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/logica.py[m[36m:[m79[36m:[m36[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/logica.py[m[36m:[m80[36m:[m27[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/logica.py[m[36m:[m80[36m:[m27[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/logica.py[m[36m:[m80[36m:[m36[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/logica.py[m[36m:[m81[36m:[m34[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/logica.py[m[36m:[m81[36m:[m36[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/logica.py[m[36m:[m82[36m:[m29[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/logica.py[m[36m:[m82[36m:[m29[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/logica.py[m[36m:[m82[36m:[m36[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/modelo.py[m[36m:[m6[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/modelo.py[m[36m:[m7[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/modelo.py[m[36m:[m9[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/modelo.py[m[36m:[m10[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/modelo.py[m[36m:[m11[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/modelo.py[m[36m:[m12[36m:[m14[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/modelo.py[m[36m:[m14[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/modelo.py[m[36m:[m23[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m17[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m22[36m:[m37[36m:[m [1m[31mE222[m multiple spaces after operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m28[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m36[36m:[m37[36m:[m [1m[31mE222[m multiple spaces after operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m39[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m43[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m51[36m:[m16[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m55[36m:[m121[36m:[m [1m[31mE501[m line too long (146 > 120 characters)
+[1msrc/queue_atencion/rutas.py[m[36m:[m74[36m:[m13[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m77[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m77[36m:[m25[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m77[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m78[36m:[m23[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m78[36m:[m23[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m78[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m79[36m:[m25[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m79[36m:[m25[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m79[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m80[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m81[36m:[m30[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m81[36m:[m30[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m81[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m82[36m:[m28[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m82[36m:[m28[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m82[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m83[36m:[m28[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m83[36m:[m28[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m83[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m84[36m:[m26[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m84[36m:[m26[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m84[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m85[36m:[m26[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m85[36m:[m26[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m85[36m:[m35[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m92[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m99[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m104[36m:[m19[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m109[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m118[36m:[m30[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m119[36m:[m19[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m121[36m:[m19[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m121[36m:[m19[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m121[36m:[m28[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m122[36m:[m20[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m122[36m:[m20[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m122[36m:[m28[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m123[36m:[m23[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m123[36m:[m23[36m:[m [1m[31mE221[m multiple spaces before operator
+[1msrc/queue_atencion/rutas.py[m[36m:[m123[36m:[m28[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m124[36m:[m26[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m124[36m:[m28[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1msrc/queue_atencion/rutas.py[m[36m:[m135[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m144[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/queue_atencion/rutas.py[m[36m:[m164[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/servicios/__init__.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mW391[m blank line at end of file
+[1msrc/servicios/modelo.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/servicios/modelo.py[m[36m:[m12[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/servicios/rutas.py[m[36m:[m10[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/servicios/rutas.py[m[36m:[m12[36m:[m58[36m:[m [1m[31mE712[m comparison to True should be 'if cond is True:' or 'if cond:'
+[1msrc/servicios/rutas.py[m[36m:[m14[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/servicios/rutas.py[m[36m:[m22[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/servicios/rutas.py[m[36m:[m29[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/servicios/rutas.py[m[36m:[m40[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_auth.py[m[36m:[m6[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_auth.py[m[36m:[m16[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_auth.py[m[36m:[m25[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_empleados.py[m[36m:[m7[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_empleados.py[m[36m:[m12[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_empleados.py[m[36m:[m25[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_empleados.py[m[36m:[m29[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_reservas.py[m[36m:[m6[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_reservas.py[m[36m:[m11[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_servicios.py[m[36m:[m6[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_servicios.py[m[36m:[m11[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1msrc/tests/test_servicios.py[m[36m:[m22[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+147   E221 multiple spaces before operator
+5     E222 multiple spaces after operator
+77    E251 unexpected spaces around keyword / parameter equals
+1     E261 at least two spaces before inline comment
+1     E272 multiple spaces before keyword
+88    E302 expected 2 blank lines, found 1
+8     E501 line too long (134 > 120 characters)
+8     E712 comparison to True should be 'if cond is True:' or 'if cond:'
+8     F401 'src.config.modelos_db.Usuario' imported but unused
+1     F403 'from src.notificaciones.envio import *' used; unable to detect undefined names
+1     F841 local variable 'e' is assigned to but never used
+2     W293 blank line contains whitespace
+6     W391 blank line at end of file

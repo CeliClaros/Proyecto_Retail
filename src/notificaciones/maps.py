@@ -1,5 +1,7 @@
 import os
+
 import requests
+
 
 def calcular_tiempo_viaje(
     origen_lat: float,
@@ -34,7 +36,7 @@ def calcular_tiempo_viaje(
         else:
             # MOCK: API no disponible, devuelve datos simulados
             return _mock_viaje(origen_lat, origen_lng, destino_lat, destino_lng)
-    except Exception as e:
+    except Exception:
         return _mock_viaje(origen_lat, origen_lng, destino_lat, destino_lng)
 
 

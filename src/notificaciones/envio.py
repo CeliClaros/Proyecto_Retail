@@ -1,7 +1,9 @@
+import os
+
 from fastapi import APIRouter
 from twilio.rest import Client
-from src.notificaciones.maps import calcular_tiempo_viaje, calcular_cuando_avisar
-import os
+
+from src.notificaciones.maps import calcular_cuando_avisar, calcular_tiempo_viaje
 
 rutas_notificaciones = APIRouter()
 

@@ -1,20 +1,27 @@
+from datetime import date, datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from datetime import datetime, date
-from typing import List
+
 from src.config.base_datos import get_db
-from src.config.modelos_db import Reserva, EstadoReservaEnum, HistorialAtencion, Usuario, TipoEvento
-from src.notificaciones.envio import enviar_confirmacion_con_ruta
-from src.queue_atencion.modelo import ReservaCrear, ReservaRespuesta
-from src.queue_atencion.logica import (
-    calcular_tiempo_espera,
-    calcular_posicion_en_cola,
-    actualizar_performance
+from src.config.modelos_db import (
+    EstadoReservaEnum,
+    HistorialAtencion,
+    Reserva,
+    TipoEvento,
+    Usuario,
 )
+from src.notificaciones.envio import enviar_confirmacion_con_ruta
+from src.queue_atencion.logica import (
+    actualizar_performance,
+    calcular_posicion_en_cola,
+    calcular_tiempo_espera,
+)
+from src.queue_atencion.modelo import ReservaCrear, ReservaRespuesta
 
 rutas_atencion = APIRouter()
 
-@rutas_atencion.get("/hoy", response_model=List[ReservaRespuesta])
+@rutas_atencion.get("/hoy", response_model=list[ReservaRespuesta])
 def reservas_de_hoy(id_tipo_evento: int = None, db: Session = Depends(get_db)):
     hoy = date.today()
     query = db.query(Reserva).filter(
@@ -25,7 +32,7 @@ def reservas_de_hoy(id_tipo_evento: int = None, db: Session = Depends(get_db)):
         query = query.filter(Reserva.id_tipo_evento == id_tipo_evento)
     return query.order_by(Reserva.id.asc()).all()
 
-@rutas_atencion.get("/por-fecha", response_model=List[ReservaRespuesta])
+@rutas_atencion.get("/por-fecha", response_model=list[ReservaRespuesta])
 def reservas_por_fecha(fecha: str, db: Session = Depends(get_db)):
     try:
         dia = datetime.strptime(fecha, "%Y-%m-%d").date()
@@ -36,7 +43,7 @@ def reservas_por_fecha(fecha: str, db: Session = Depends(get_db)):
         Reserva.fecha_hora_reserva <  datetime.combine(dia, datetime.max.time())
     ).order_by(Reserva.posicion_en_cola).all()
 
-@rutas_atencion.get("/", response_model=List[ReservaRespuesta])
+@rutas_atencion.get("/", response_model=list[ReservaRespuesta])
 def listar_reservas(db: Session = Depends(get_db)):
     return db.query(Reserva).all()
 
@@ -47,8 +54,8 @@ def crear_reserva(reserva: ReservaCrear, db: Session = Depends(get_db)):
     ahora_ba = datetime.now(ZoneInfo("America/Argentina/Buenos_Aires"))
     hora_local = ahora_ba.hour
     dia_semana = ahora_ba.weekday()  # 0=lunes, 6=domingo
-    horario_inicio = int(os.getenv("HORARIO_INICIO", 9))
-    horario_fin    = int(os.getenv("HORARIO_FIN", 23))
+    horario_inicio = int(os.getenv("HORARIO_INICIO", "9"))
+    horario_fin    = int(os.getenv("HORARIO_FIN", "23"))
     if dia_semana >= 5:
         raise HTTPException(status_code=400, detail="El servicio no está disponible los fines de semana")
     if hora_local < horario_inicio or hora_local >= horario_fin:
@@ -161,7 +168,7 @@ def mover_al_final(reserva_id: int, db: Session = Depends(get_db)):
         "nuevo_eta_min": reserva.tiempo_espera_estimado_min
     }
 
-@rutas_atencion.get("/mis-reservas/{id_usuario}", response_model=List[ReservaRespuesta])
+@rutas_atencion.get("/mis-reservas/{id_usuario}", response_model=list[ReservaRespuesta])
 def mis_reservas(id_usuario: int, db: Session = Depends(get_db)):
     return db.query(Reserva).filter(
         Reserva.id_usuario == id_usuario

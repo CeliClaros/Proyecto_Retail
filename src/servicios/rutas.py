@@ -1,13 +1,14 @@
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from src.config.base_datos import get_db
 from src.config.modelos_db import TipoEvento
 from src.servicios.modelo import TipoEventoCrear, TipoEventoRespuesta
-from typing import List
 
 rutas_servicios = APIRouter()
 
-@rutas_servicios.get("/", response_model=List[TipoEventoRespuesta])
+@rutas_servicios.get("/", response_model=list[TipoEventoRespuesta])
 def listar_tipo_eventos(db: Session = Depends(get_db)):
     return db.query(TipoEvento).filter(TipoEvento.activo == True).all()
 
