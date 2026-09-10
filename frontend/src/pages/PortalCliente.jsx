@@ -93,7 +93,7 @@ export default function PortalCliente({ onLogout }) {
       const lat = r.data.ubicacion_lat || -34.6
       const lng = r.data.ubicacion_lng || -58.4
       const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
-      setMensaje(`✅ ¡Reserva confirmada! Estás en la posición #${pos}. Tiempo de espera estimado: ${eta} minutos. Te avisamos por WhatsApp cuando tengas que salir. 📍 Ver ruta al local: ${mapsUrl}`)
+      setUltimaReserva({ pos, eta, lat, lng, id: r.data.id })
       setMostrarForm(false)
       setTab("activos")
       cargarReservas()
