@@ -44,6 +44,14 @@ def cerrar_reservas_vencidas():
 def iniciar_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(
+        func=lambda: avisar_usuarios_proximos(next(get_db())),
+        trigger="interval",
+        minutes=5,
+        id="avisar_proximos",
+        name="Avisar usuarios próximos a ser atendidos",
+        replace_existing=True
+    )
+    scheduler.add_job(
         cerrar_reservas_vencidas,
         trigger="cron",
         hour=23,
@@ -53,3 +61,46 @@ def iniciar_scheduler():
     scheduler.start()
     print("[SCHEDULER] Iniciado - cierre diario a las 23:59")
     return scheduler
+
+def avisar_usuarios_proximos(db_session):
+    """
+    Cada 5 minutos: avisa por WhatsApp a los usuarios cuyo ETA
+    es menor o igual al tiempo de viaje estimado (25 min mock).
+    Solo avisa a reservas PENDIENTE/CONFIRMADA/EN_ESPERA de hoy.
+    """
+    from datetime import date
+    from src.config.modelos_db import Reserva, EstadoReservaEnum, Usuario, TipoEvento
+    from src.notificaciones.envio import enviar_whatsapp
+    hoy = date.today()
+    reservas = db_session.query(Reserva).filter(
+        Reserva.estado.in_([
+            EstadoReservaEnum.PENDIENTE,
+            EstadoReservaEnum.CONFIRMADA,
+            EstadoReservaEnum.EN_ESPERA
+        ]),
+        Reserva.fecha_hora_reserva >= datetime.combine(hoy, datetime.min.time()),
+        Reserva.fecha_hora_reserva <  datetime.combine(hoy, datetime.max.time()),
+    ).all()
+    for reserva in reservas:
+        try:
+            usuario = db_session.query(Usuario).filter(Usuario.id == reserva.id_usuario).first()
+            tipo    = db_session.query(TipoEvento).filter(TipoEvento.id == reserva.id_tipo_evento).first()
+            if not usuario or not usuario.telefono:
+                continue
+            eta = reserva.tiempo_espera_estimado_min or 0
+            tiempo_viaje = 25  # mock — en producción usar Google Maps API
+            if eta <= tiempo_viaje + 5:
+                nombre_tramite = tipo.nombre if tipo else "tu trámite"
+                mensaje = (
+                    f"⏰ Hola {usuario.nombre}! Es hora de salir.\n\n"
+                    f"Tu turno para {nombre_tramite} está próximo.\n"
+                    f"Posición en fila: #{reserva.posicion_en_cola}\n"
+                    f"Tiempo de espera estimado: {eta} minutos\n"
+                    f"Tiempo de viaje al local: ~{tiempo_viaje} minutos\n\n"
+                    f"📍 Ruta al local: https://www.google.com/maps/dir/?api=1&destination={reserva.ubicacion_lat},{reserva.ubicacion_lng}\n\n"
+                    f"¡Te esperamos!"
+                )
+                enviar_whatsapp(usuario.telefono, mensaje)
+                print(f"[SCHEDULER] Aviso enviado a {usuario.nombre} — ETA: {eta} min")
+        except Exception as e:
+            print(f"[SCHEDULER] Error al avisar usuario {reserva.id_usuario}: {e}")

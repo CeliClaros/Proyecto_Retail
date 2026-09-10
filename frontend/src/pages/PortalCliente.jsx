@@ -20,6 +20,26 @@ export default function PortalCliente({ onLogout }) {
   const [idTipoEvento, setIdTipoEvento]     = useState("")
   const [errorForm, setErrorForm]           = useState("")
   const [ultimaReserva, setUltimaReserva]   = useState(null)
+  const [ubicacionUsuario, setUbicacionUsuario] = useState(null)
+  const [tiempoViaje, setTiempoViaje]           = useState(null)
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setUbicacionUsuario({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => console.log("Ubicación no disponible")
+      )
+    }
+  }, [])
+
+  const calcularDistancia = (lat1, lng1, lat2, lng2) => {
+    const R = 6371
+    const dLat = (lat2 - lat1) * Math.PI / 180
+    const dLng = (lng2 - lng1) * Math.PI / 180
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2
+    const distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    return Math.round(distKm * 12) // ~12 min/km caminando
+  }
   const [paginaHistorial, setPaginaHistorial] = useState(1)
 
   const nombre    = localStorage.getItem("nombre")
@@ -306,6 +326,18 @@ export default function PortalCliente({ onLogout }) {
                     </div>
                     <p className="text-3xl font-bold text-blue-800">{r.tiempo_espera_estimado_min} min</p>
                     <p className="text-blue-600 text-sm mt-1">Posición en fila: #{r.posicion_en_cola}</p>
+                    {ubicacionUsuario && r.ubicacion_lat && (() => {
+                      const minViaje = calcularDistancia(ubicacionUsuario.lat, ubicacionUsuario.lng, r.ubicacion_lat, r.ubicacion_lng)
+                      const debesSalir = r.tiempo_espera_estimado_min <= minViaje + 5
+                      return (
+                        <div className={"mt-3 p-3 rounded-lg text-sm font-medium " + (debesSalir ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700")}>
+                          {debesSalir
+                            ? `🚨 ¡Salí ahora! Estás a ~${minViaje} min del local y tu turno está próximo.`
+                            : `📍 Estás a ~${minViaje} min del local. Tiempo de espera: ${r.tiempo_espera_estimado_min} min. Podés esperar.`
+                          }
+                        </div>
+                      )
+                    })()}
                   </div>
 
                   <div className="flex gap-3 mt-2 flex-wrap">
