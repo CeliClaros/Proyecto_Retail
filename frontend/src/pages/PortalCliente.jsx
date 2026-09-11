@@ -308,7 +308,7 @@ export default function PortalCliente({ onLogout }) {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <p className="text-lg font-semibold text-gray-800">
-                        {estadoIcono[r.estado]} Reserva #{r.id}
+                        {estadoIcono[r.estado]} Reserva #{r.id} — {tipoEventos.find(t => t.id === r.id_tipo_evento)?.nombre || "Trámite"}
                       </p>
                       <p className="text-gray-500 text-sm mt-1">
                         {new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}
@@ -384,7 +384,7 @@ export default function PortalCliente({ onLogout }) {
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="font-medium text-gray-800">
-                        {estadoIcono[r.estado]} Reserva #{r.id}
+                        {estadoIcono[r.estado]} Reserva #{r.id} — {tipoEventos.find(t => t.id === r.id_tipo_evento)?.nombre || "Trámite"}
                       </p>
                       <p className="text-gray-500 text-sm">
                         {new Date(r.fecha_hora_reserva).toLocaleString("es-AR")}

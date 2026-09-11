@@ -67,9 +67,13 @@ def crear_reserva(reserva: ReservaCrear, db: Session = Depends(get_db)):
         datos["posicion_en_cola"] = calcular_posicion_en_cola(
             db, datos["id_empleado_asignado"], datos["fecha_hora_reserva"]
         )
-        datos["tiempo_espera_estimado_min"] = calcular_tiempo_espera(
+        # Fallback: si no hay historial, usar tiempo_base_min del tipo de evento
+        tipo_evento = db.query(TipoEvento).filter(TipoEvento.id == datos["id_tipo_evento"]).first()
+        tiempo_base = tipo_evento.tiempo_base_min if tipo_evento else 15
+        eta = calcular_tiempo_espera(
             db, datos["id_empleado_asignado"], datos["id_tipo_evento"]
         ) * datos["posicion_en_cola"]
+        datos["tiempo_espera_estimado_min"] = eta if eta > 0 else tiempo_base
     db_reserva = Reserva(**datos)
     db.add(db_reserva)
     db.commit()
