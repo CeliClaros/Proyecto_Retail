@@ -38,7 +38,8 @@ export default function PortalCliente({ onLogout }) {
     const dLng = (lng2 - lng1) * Math.PI / 180
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2
     const distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-    return Math.round(distKm * 12) // ~12 min/km caminando
+    const minutos = Math.round(distKm * 4)
+    return minutos > 120 ? 25 : minutos
   }
   const [paginaHistorial, setPaginaHistorial] = useState(1)
 

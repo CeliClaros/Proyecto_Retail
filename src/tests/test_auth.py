@@ -10,7 +10,7 @@ def test_registro_usuario():
         "apellido": "Usuario",
         "email":    "test.auth@retail.com",
         "password": "test1234",
-        "rol":      "cliente"
+        "rol":      "CLIENTE"
     })
     assert response.status_code in [201, 400]
 
@@ -21,7 +21,7 @@ def test_login_correcto():
     })
     assert response.status_code == 200
     assert "access_token" in response.json()
-    assert response.json()["rol"] == "admin"
+    assert response.json()["rol"] == "ADMIN"
 
 def test_login_incorrecto():
     response = client.post("/api/auth/login", json={
