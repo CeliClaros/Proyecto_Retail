@@ -15,6 +15,7 @@ def cerrar_reservas_vencidas():
             EstadoReservaEnum.PENDIENTE,
             EstadoReservaEnum.CONFIRMADA,
             EstadoReservaEnum.EN_ESPERA,
+            EstadoReservaEnum.EN_CURSO,
         ]
         reservas_vencidas = db.query(Reserva).filter(
             Reserva.estado.in_(estados_activos),

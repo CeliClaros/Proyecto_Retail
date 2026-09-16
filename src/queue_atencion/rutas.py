@@ -165,7 +165,7 @@ def mover_al_final(reserva_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Solo se pueden mover reservas activas")
     ultima_pos = db.query(Reserva).filter(
         Reserva.id_empleado_asignado == reserva.id_empleado_asignado,
-        Reserva.estado.in_([EstadoReservaEnum.PENDIENTE, EstadoReservaEnum.CONFIRMADA, EstadoReservaEnum.EN_ESPERA])
+        Reserva.estado.in_([EstadoReservaEnum.PENDIENTE, EstadoReservaEnum.CONFIRMADA, EstadoReservaEnum.EN_ESPERA, EstadoReservaEnum.EN_CURSO])
     ).count()
     reserva.posicion_en_cola = ultima_pos + 1
     reserva.tiempo_espera_estimado_min = ultima_pos * 15
