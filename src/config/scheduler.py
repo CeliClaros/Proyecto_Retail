@@ -3,7 +3,7 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from sqlalchemy.orm import Session
 
-from src.config.base_datos import SessionLocal
+from src.config.base_datos import SessionLocal, get_db
 from src.config.modelos_db import EstadoReservaEnum, LogSistema, Reserva
 
 
