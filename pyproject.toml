@@ -1,0 +1,15 @@
+[tool.ruff]
+line-length = 120
+select = ["E", "F", "B", "UP", "I"]
+exclude = ["src/tests"]
+
+[tool.ruff.lint]
+ignore = ["B008"]
+
+[tool.bandit]
+targets = ["src"]
+recursive = true
+skips = ["B101", "B105"]
+
+[tool.pytest.ini_options]
+testpaths = ["src/tests"]
